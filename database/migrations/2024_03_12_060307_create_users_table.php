@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('role_id');
             $table->foreignId('gender_id');
-            $table->foreignId('mbti_id')->nullable();
 
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
@@ -31,7 +30,6 @@ return new class extends Migration
 
             $table->foreign('role_id')->references($type->getKeyName())->on($type->getTable())->onDelete('cascade');
             $table->foreign('gender_id')->references($type->getKeyName())->on($type->getTable())->onDelete('cascade');
-            $table->foreign('mbti_id')->references($type->getKeyName())->on($type->getTable())->onDelete('cascade');
             $table->foreign('created_by')->references($user->getKeyName())->on($user->getTable())->onDelete('cascade');
             $table->foreign('updated_by')->references($user->getKeyName())->on($user->getTable())->onDelete('cascade');
         });

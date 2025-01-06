@@ -24,86 +24,6 @@ class MenuSeeder extends Seeder
             ]
         ],
         [
-            'menuroute' => Routes::routeGame,
-            'menunm' => 'Game',
-            'menuicon' => 'fas fa-gamepad',
-            'features' => [
-                [
-                    'feattitle' => 'View',
-                    'featslug' => 'view',
-                ]
-            ]
-        ],
-        [
-            'menunm' => 'MBTI',
-            'menuicon' => 'fas fa-brain',
-            'features' => [
-                [
-                    'feattitle' => 'View',
-                    'featslug' => 'view',
-                ]
-            ],
-            'children' => [
-                [
-                    'menuroute' => Routes::routeTest,
-                    'menunm' => 'Mbti Test',
-                    'menuicon' => 'fa fa-user-circle',
-                    'features' => [
-                        [
-                            'feattitle' => 'View',
-                            'featslug' => 'view',
-                        ]
-                    ]
-                ],
-                [
-                    'menuroute' => Routes::routeMbtiLesson,
-                    'menunm' => 'Mbti Lesson',
-                    'menuicon' => 'fa fa-book',
-                    'features' => [
-                        [
-                            'feattitle' => 'View',
-                            'featslug' => 'view',
-                        ],
-                        [
-                            'feattitle' => 'Add',
-                            'featslug' => 'add',
-                        ],
-                        [
-                            'feattitle' => 'Delete',
-                            'featslug' => 'delete',
-                        ],
-                    ]
-                ],
-                [
-                    'menuroute' => Routes::routeMbtiQuestion,
-                    'menunm' => 'Mbti Question',
-                    'menuicon' => 'fa fa-question',
-                    'features' => [
-                        [
-                            'feattitle' => 'View',
-                            'featslug' => 'view',
-                        ],
-                        [
-                            'feattitle' => 'Add with AI',
-                            'featslug' => 'addAI',
-                        ],
-                        [
-                            'feattitle' => 'Add',
-                            'featslug' => 'add',
-                        ],
-                        [
-                            'feattitle' => 'Edit',
-                            'featslug' => 'edit',
-                        ],
-                        [
-                            'feattitle' => 'Delete',
-                            'featslug' => 'delete',
-                        ],
-                    ]
-                ]
-            ]
-        ],
-        [
             'menunm' => 'Masters',
             'menuicon' => 'fas fa-folder',
             'features' => [
@@ -136,29 +56,6 @@ class MenuSeeder extends Seeder
                         ],
                     ]
                 ],
-                [
-                    'menuroute' => Routes::routeMasterLessons,
-                    'menunm' => 'Master Lessons',
-                    'menuicon' => 'fa fa-book',
-                    'features' => [
-                        [
-                            'feattitle' => 'View',
-                            'featslug' => 'view',
-                        ],
-                        [
-                            'feattitle' => 'Add',
-                            'featslug' => 'add',
-                        ],
-                        [
-                            'feattitle' => 'Edit',
-                            'featslug' => 'edit',
-                        ],
-                        [
-                            'feattitle' => 'Delete',
-                            'featslug' => 'delete',
-                        ],
-                    ]
-                ]
             ]
         ],
         [

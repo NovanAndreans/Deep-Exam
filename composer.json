@@ -29,7 +29,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files":[
-            "app/Constant/AiText.php",
+            "app/Constants/AiText.php",
             "app/Helpers/Functions.php",
             "app/Helpers/Blade.php"
         ]

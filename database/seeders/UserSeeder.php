@@ -30,7 +30,6 @@ class UserSeeder extends Seeder
                 'password'	=> Hash::make('123'),
                 'role_id' => $this->findType(DBTypes::RoleSuperAdmin),
                 'gender_id' => $this->findType(DBTypes::UserGenderM),
-                'mbti_id' => $this->findType(DBTypes::INFJ),
             ],
             [
                 'name'	=> 'Novan',
@@ -39,7 +38,6 @@ class UserSeeder extends Seeder
                 'password'	=> Hash::make('123'),
                 'role_id' => $this->findType(DBTypes::RoleSiswa),
                 'gender_id' => $this->findType(DBTypes::UserGenderM),
-                'mbti_id' => $this->findType(DBTypes::INFJ),
             ],
         ]);
     }
