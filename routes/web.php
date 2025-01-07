@@ -25,3 +25,6 @@ Route::get('/404', function () {
     return view('GuestPages.404');
 })->name(Routes::routeGuest404);
 
+Route::get('/dashboard-admin', function () {
+    return view('Templates.admin');
+})->name(Routes::routeAdminDashboard);
