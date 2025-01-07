@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Constant\DBTypes;
+use App\Constants\DBTypes;
 use App\Models\Type;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;

@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Constant\ReactRoute;
-use App\Constant\Routes;
+use App\Constants\Routes;
 use App\Models\Feature;
 use App\Models\Menu;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;

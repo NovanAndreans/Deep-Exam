@@ -11,6 +11,11 @@ class Routes
     const routeGuestTeam = 'guest.team';
     const routeGuestTestimoni = 'guest.testimoni';
     const routeGuest404 = 'guest.404';
+    
+    const routeSignin = 'login';
+    const routeSigninAction = 'loginAction';
+    const routeSignup = 'register';
+    const routeSignupAction = 'registerAction';
 
     const routeAdminDashboard = 'dashboard';
 

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Constant\DBTypes;
+use App\Constants\DBTypes;
 use App\Helpers\Functions;
 use App\Models\User;
 use App\Services\TypeService;
@@ -25,7 +25,6 @@ class UserSeeder extends Seeder
         User::insert([
             [
                 'name'	=> 'Super Admin',
-                'username'	=> 'admin',
                 'email'	=> 'admin@gmail.com',
                 'password'	=> Hash::make('123'),
                 'role_id' => $this->findType(DBTypes::RoleSuperAdmin),
@@ -33,7 +32,6 @@ class UserSeeder extends Seeder
             ],
             [
                 'name'	=> 'Novan',
-                'username'	=> 'novan',
                 'email'	=> 'novan@gmail.com',
                 'password'	=> Hash::make('123'),
                 'role_id' => $this->findType(DBTypes::RoleSiswa),

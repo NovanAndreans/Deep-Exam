@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Constant\DBTypes;
+use App\Constants\DBTypes;
 use App\Models\Feature;
 use App\Models\Permission;
 use App\Models\Type;

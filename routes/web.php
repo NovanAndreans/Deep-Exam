@@ -1,30 +1,28 @@
 <?php
 
 use App\Constants\Routes;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Guest\GuestController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('GuestPages.index');
-})->name(Routes::routeGuestHome);
-Route::get('/about', function () {
-    return view('GuestPages.about');
-})->name(Routes::routeGuestAbout);
-Route::get('/courses', function () {
-    return view('GuestPages.courses');
-})->name(Routes::routeGuestCourses);
-Route::get('/contact', function () {
-    return view('GuestPages.contact');
-})->name(Routes::routeGuestContact);
-Route::get('/team', function () {
-    return view('GuestPages.team');
-})->name(Routes::routeGuestTeam);
-Route::get('/testimoni', function () {
-    return view('GuestPages.testimoni');
-})->name(Routes::routeGuestTestimoni);
-Route::get('/404', function () {
-    return view('GuestPages.404');
-})->name(Routes::routeGuest404);
 
-Route::get('/dashboard-admin', function () {
-    return view('Templates.admin');
-})->name(Routes::routeAdminDashboard);
+
+Route::middleware('guest')->group(function () {
+    Route::get('/', [GuestController::class, 'home'])->name(Routes::routeGuestHome);
+    Route::get('/about', [GuestController::class, 'about'])->name(Routes::routeGuestHome);
+    Route::get('/courses', [GuestController::class, 'courses'])->name(Routes::routeGuestHome);
+    Route::get('/contact', [GuestController::class, 'contact'])->name(Routes::routeGuestHome);
+    Route::get('/team', [GuestController::class, 'team'])->name(Routes::routeGuestHome);
+    Route::get('/testimoni', [GuestController::class, 'testimoni'])->name(Routes::routeGuestHome);
+    // Route::get('/not-found', [GuestController::class, 'notFound'])->name(Routes::routeGuestHome);
+
+    Route::get('/signin', [AuthController::class, 'signin'])->name(Routes::routeSignin);
+    Route::post('/signin', [AuthController::class, 'signinAction'])->name(Routes::routeSigninAction);
+    Route::get('/signup', [AuthController::class, 'signup'])->name(Routes::routeSignup);
+    Route::post('/signup', [AuthController::class, 'signupAction'])->name(Routes::routeSignupAction);
+});
+
+Route::middleware('auth:web')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'home'])->name(Routes::routeAdminDashboard);
+});

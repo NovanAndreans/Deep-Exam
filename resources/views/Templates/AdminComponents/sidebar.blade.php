@@ -10,8 +10,8 @@
                 <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
             </div>
             <div class="ms-3">
-                <h6 class="mb-0">Jhon Doe</h6>
-                <span>Admin</span>
+                <h6 class="mb-0">{{Auth::user()->name}}</h6>
+                <span>{{myType(Auth::user()->role_id)}}</span>
             </div>
         </div>
         <div class="navbar-nav w-100">

@@ -18,11 +18,10 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) use ($user, $type) {
             $table->id();
             $table->string('name');
-            $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password');
             $table->foreignId('role_id');
-            $table->foreignId('gender_id');
+            $table->foreignId('gender_id')->nullable();
 
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
