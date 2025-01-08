@@ -1,4 +1,4 @@
-<div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+<div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form">
     <div class="modal-dialog modal-lg" role="document">
         <form action="" enctype="multipart/form-data" method="post" class="form-horizontal">
             @csrf
@@ -6,8 +6,11 @@
 
             <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <left>
+                        <h4 class="modal-title"></h4>
+                    </left>
+                    <right><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button></right>
                 </div>
                 <div class="modal-body">
                     <div class="form-floating mb-4">
@@ -59,7 +62,7 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-sm btn-flat btn-primary"><i class="fa fa-save"></i>
                         Simpan</button>
-                    <button type="button" class="btn btn-sm btn-flat btn-warning" data-bs-dismiss="modal"><i
+                    <button type="button" class="btn btn-sm btn-flat btn-warning" data-dismiss="modal"><i
                             class="fa fa-arrow-circle-left"></i> Batal</button>
                 </div>
             </div>
