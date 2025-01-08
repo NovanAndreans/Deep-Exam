@@ -1,5 +1,5 @@
 <div class="card p-3">
-  <div class="card-header">
+  <div class="card-header" style="background-color: white">
     <div class="row align-items-center">
       <!-- Select Entries -->
       <div class="col-md-6 col-12 d-flex align-items-center">
