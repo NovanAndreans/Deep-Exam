@@ -87,10 +87,12 @@ abstract class Controller
         if ($creatorid) {
 
             $oldFile = $filesService->where('refid', $refid)->where('transtypeid', $type)->first();
-            unlink(storage_path("app/public/$directory/" . $oldFile->filename));
-            $oldFile->delete();
+            if ($oldFile) {
+                unlink(public_path("$directory/" . $oldFile->filename));
+                $oldFile->delete();
+            }
 
-            $result = $file->storeAs('public/' . $directory, $filename);
+            $result = $file->storeAs($directory, $filename, 'root_public');
             if ($result) {
                 $data = [];
 
@@ -105,7 +107,8 @@ abstract class Controller
                 $filesService->create($data);
             }
         } else {
-            $result = $file->storeAs('public/' . $directory, $filename);
+            // $result = $file->move(public_path($directory), $filename);
+            $result = $file->storeAs($directory, $filename, 'root_public');
             if ($result) {
                 $data = [];
 

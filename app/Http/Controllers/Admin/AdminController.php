@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     public function home() : View {
+        $this->setMenuSession();
         return view('AdminPages.dashboard');
     }
 }

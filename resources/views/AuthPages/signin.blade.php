@@ -2,31 +2,31 @@
 @section('content')
 <!-- Sign In Start -->
 <div class="container-fluid">
-    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="row h-100 align-items-center justify-content-center animate__animated animate__fadeIn" style="min-height: 100vh;">
         <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
             <form action="{{route(\App\Constants\Routes::routeSigninAction)}}" method="post">
                 @csrf
-                <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
+                <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3 animate__animated animate__zoomIn">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <a href="index.html" class="">
-                            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+                            <h3 class="text-primary animate__animated animate__fadeInDown"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
                         </a>
-                        <h3>Sign In</h3>
+                        <h3 class="animate__animated animate__fadeInDown">Sign In</h3>
                     </div>
-                    <div class="form-floating mb-3">
+                    <div class="form-floating mb-3 animate__animated animate__fadeIn animate__delay-1s">
                         <input type="email" name="email" class="form-control" id="floatingInput"
                             placeholder="name@example.com">
                         <label for="floatingInput">Email address</label>
                     </div>
-                    <div class="form-floating mb-4 position-relative">
-                        <input name="password" type="password" minlength="8" class="form-control" id="password"
+                    <div class="form-floating mb-4 position-relative animate__animated animate__fadeIn animate__delay-2s">
+                        <input name="password" type="password" class="form-control" id="password"
                             placeholder="Password">
                         <label for="password">Password</label>
                         <i class="fa fa-eye position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer toggle-password"
                             data-target="#password"></i>
                     </div>
-                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
-                    <p class="text-center mb-0">Don't have an Account? <a href="{{route(\App\Constants\Routes::routeSignup)}}">Sign Up</a></p>
+                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4 animate__animated animate__fadeIn animate__delay-3s">Sign In</button>
+                    <p class="text-center mb-0 animate__animated animate__fadeIn">Don't have an Account? <a href="{{route(\App\Constants\Routes::routeSignup)}}">Sign Up</a></p>
                 </div>
             </form>
         </div>

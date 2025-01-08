@@ -79,18 +79,20 @@ class AuthController extends Controller
         $user = User::where('email', $validatedData['email'])->first();
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            // Login berhasil, simpan sesi
-            Session::put('user_id', $user->id);
-            Session::put('user_name', $user->name);
-            Session::put('user_role', $user->role_id);
-
             // Redirect ke halaman dashboard
             $this->successToast('Signin Successful');
-            return redirect()->route('dashboard');
+            return redirect()->route(Routes::routeAdminDashboard);
         } else {
             // Login gagal
             $this->failedToast('Invalid email or password');
             return redirect()->back()->withInput();
         }
+    }
+
+    public function signout()
+    {
+        Auth::logout();
+        $this->successToast('Signout Success\n Anda berhasil Logout');
+        return redirect()->route(Routes::routeGuestHome);
     }
 }

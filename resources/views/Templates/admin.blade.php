@@ -22,14 +22,18 @@
         <div class="content">
 
             @include('Templates.AdminComponents.navbar')
+            <div class="container-fluid pt-4 px-4">
+                @yield('content-header')
+                @yield('content')
+            </div>
 
-            @yield('content')
 
             @include('Templates.AdminComponents.footer')
         </div>
         <!-- Content End -->
 
 
+        @yield('content-modal')
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>

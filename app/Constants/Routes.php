@@ -16,6 +16,7 @@ class Routes
     const routeSigninAction = 'loginAction';
     const routeSignup = 'register';
     const routeSignupAction = 'registerAction';
+    const routeSignout = 'signout';
 
     const routeAdminDashboard = 'dashboard';
 

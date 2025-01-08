@@ -21,7 +21,7 @@
             </div>
             <a href="{{route(\App\Constants\Routes::routeGuestContact)}}" class="nav-item nav-link {{ activeMenu(\App\Constants\Routes::routeGuestContact) }}">Contact</a>
         </div>
-        <a href="" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i
+        <a href="{{route(\App\Constants\Routes::routeSignin)}}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i
                 class="fa fa-arrow-right ms-3"></i></a>
     </div>
 </nav>
