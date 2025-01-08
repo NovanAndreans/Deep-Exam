@@ -12,6 +12,10 @@
   .toggle-password:hover {
     color: #000;
   }
+
+  .dataTables_length {
+    display: none !important;
+  }
 </style>
 @endpush
 
@@ -82,6 +86,7 @@ break;
         "drawCallback": function () {
               $('.dataTables_paginate > .paginate_button').addClass('page-link p-2');
           },
+          pageLength: 5,
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
             {data: 'name', name: 'name'},
@@ -90,7 +95,11 @@ break;
             {data: 'action', name: 'action', orderable: false, searchable: false},
           ]
     });
-
+    // Change page length on dropdown change
+    $('#entries').on('change', function () {
+            let value = $(this).val();
+            table.page.len(value).draw();
+        });
     $('.dataTables_filter').addClass('d-none')
   });
 
