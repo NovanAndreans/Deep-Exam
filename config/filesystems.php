@@ -32,6 +32,7 @@ return [
         'root_public' => [
             'driver' => 'local',
             'root' => public_path('/'),
+            // 'root' => '/home/andq5672/public_html/',
             'url' => env('APP_URL'),
             'visibility' => 'public',
         ],
