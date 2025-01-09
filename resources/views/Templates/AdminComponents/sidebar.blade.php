@@ -61,10 +61,10 @@
             }
             @endphp
             @if ($hasParentViewFeature)
-            <div class="nav-item dropdown {{ activeMenu($item->menuroute) }}">
-                <a href="#" class="nav-link dropdown-toggle {{ activeMenu($item->menuroute) }}"
-                    data-bs-toggle="dropdown"><i class="{{$item->menuicon}}"></i>{{$item->menunm}}</a>
-                <div class="dropdown-menu bg-transparent border-0">
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle {{ activeParentMenu($item->menunm) }}"
+                    data-bs-toggle="dropdown" aria-expanded="{{ activeParentMenuExpand($item->menunm) }}"><i class="{{$item->menuicon}}"></i>{{$item->menunm}}</a>
+                <div class="dropdown-menu bg-transparent border-0 {{ activeParentMenuExpanded($item->menunm) }}">
                     @if (!empty($item->children) && count($item->children) > 0)
                     @foreach ($item->children as $child)
                     @php
