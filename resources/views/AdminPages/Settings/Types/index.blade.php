@@ -1,6 +1,6 @@
 @extends('Templates.admin')
 
-@section('title', 'Master Users')
+@section('title', 'Master Types')
 
 @push('css')
 <style>
@@ -20,7 +20,7 @@
 @endpush
 
 @section('content-header')
-<h1>Master Users</h1>
+<h1>Master Types</h1>
 @php
 $hasAddFeature = false;
 $hasEditFeature = false;

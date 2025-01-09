@@ -63,8 +63,8 @@ class TypeController extends Controller
                             // Tampilkan tombol hanya jika desc === null
                             if ($item->desc === null) {
                                 $list .= '<div>
-                        <button class="btn btn-warning btn-sm" onclick="editForm(`' . route('types.update', $item->id) . '`)"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteData(`' . route('types.destroy', $item->id) . '`)"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-warning btn-sm" onclick="editForm(`' . route('types.update', $item->id) . '`)" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ' . $item->name . '"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteData(`' . route('types.destroy', $item->id) . '`)" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ' . $item->name . '"><i class="fa fa-trash"></i></button>
                     </div>';
                             }
 

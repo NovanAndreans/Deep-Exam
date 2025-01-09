@@ -19,7 +19,13 @@
 <script src="{{asset('Admin/js/main.js')}}"></script>
 
 <script>
-    var Toast = Swal.mixin({
+  $(document).ready(function() {
+    $("body").tooltip({ selector: '[data-bs-toggle=tooltip]' });
+});
+</script>
+
+<script>
+  var Toast = Swal.mixin({
       toast: true,
       position: 'top-end',
       showConfirmButton: false,

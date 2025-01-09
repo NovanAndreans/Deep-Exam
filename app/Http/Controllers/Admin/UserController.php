@@ -47,9 +47,13 @@ class UserController extends Controller
                         $btn = '';
                     } else {
                         $btn = '
-                    <btn onclick="editForm(`' . route('users.update', $row->id) . '`)" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></btn>
-                    <btn onclick="deleteData(`' . route('users.destroy', $row->id) . '`)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></btn>
-                ';
+                            <button onclick="editForm(`' . route('users.update', $row->id) . '`)" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ' . $row->name . '">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button onclick="deleteData(`' . route('users.destroy', $row->id) . '`)" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ' . $row->name . '">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        ';
                     }
 
                     return $btn;

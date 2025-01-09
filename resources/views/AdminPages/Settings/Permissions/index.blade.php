@@ -44,7 +44,7 @@
         @php $i = 0; @endphp
         @foreach ($menus as $item)
             @php $i++; @endphp
-            <div class="col-12 py-3 row {{ $i % 2 == 0 ? 'text-white' : '' }}" style="background-color: {{ $i % 2 == 0 ? '#1089ff' : 'transparent' }}">
+            <div class="col-12 py-3 row" style="background-color: {{ $i % 2 == 0 ? '#f0f0f0' : 'transparent' }}">
                 <div class="col-2">
                     {{ $item->menunm }}
                 </div>
@@ -69,7 +69,7 @@
                                 value="{{ $feature->id }}"
                                 role="switch" 
                                 {{ $isChecked ? 'checked' : '' }}
-                                onchange="togglePermission(this)">
+                                onchange="togglePermission(this)"  data-bs-toggle="tooltip" data-bs-placement="bottom" title={{ $isChecked ? 'Disallow' : 'Allow' }}>
                             <input type="hidden" name="role" value="{{ $roleActiveId }}">
                         </form>
                     </div>

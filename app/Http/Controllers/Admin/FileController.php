@@ -35,8 +35,8 @@ class FileController extends Controller
                 ->addColumn('action', function ($row) {
                     $url = url("$row->directories/$row->filename");
                     $btn = '
-                        <btn onclick="viewImg(`' . $url . '`, `'.$row->filename.'`)" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></btn>
-                        <btn onclick="deleteData(`' . route('files.destroy', $row->id) . '`)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></btn>
+                        <btn onclick="viewImg(`' . $url . '`, `'.$row->filename.'`)" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat"><i class="fa fa-eye"></i></btn>
+                        <btn onclick="deleteData(`' . route('files.destroy', $row->id) . '`)" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fa fa-trash"></i></btn>
                     ';
                     return $btn;
                 })
