@@ -7,7 +7,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <left>
-                        <h4 id="img-title" class="modal-title"></h4>
+                        {{-- <h4 id="img-title" class="modal-title"></h4> --}}
                     </left>
                     <right><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true"></span></button></right>

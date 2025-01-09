@@ -21,7 +21,7 @@
             <input id="datatable-search" type="text" class="form-control" placeholder="Search">
             <button id="basic-addon2" type="button"
               class="input-group-text btn btn-info btn-sm btn-flat">
-              <i class="fa fa-search"></i> Tambah
+              <i class="fa fa-search"></i>
             </button>
           </div>
         </form>

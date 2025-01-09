@@ -13,6 +13,7 @@
 <script src="{{ asset('Admin/js/components-table.js') }}"></script>
 <script src="{{ asset('Admin/lib/datatables/jquery.dataTables.min.js') }}" defer></script>
 <script src="{{ asset('Admin/lib/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('Admin/lib/tooltip/tooltip.js') }}"></script>
 
 <!-- Template Javascript -->
 <script src="{{asset('Admin/js/main.js')}}"></script>
