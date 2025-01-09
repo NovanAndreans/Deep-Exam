@@ -20,7 +20,16 @@
 @endpush
 
 @section('content-header')
-<h1>Master Users</h1>
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Master Users</h1>
+    <div aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{route(\App\Constants\Routes::routeAdminDashboard)}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="#">Masters</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+        </ol>
+    </div>
+</div>
 @php
 $hasAddFeature = false;
 $hasEditFeature = false;

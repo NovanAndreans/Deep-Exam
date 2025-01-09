@@ -3,38 +3,47 @@
 @section('title', 'Setting Permissions')
 
 @section('content-header')
-    <h1>Setting Permissions</h1>
-    @php
-        $hasAddFeature = false;
-        if (count($features->features) > 0) {
-            foreach ($features->features as $feature) {
-                if ($feature['featslug'] == 'add') {
-                    foreach ($feature->permissions as $permission) {
-                        if ($permission->permisfeatid == $feature->id) {
-                            $hasAddFeature = $permission->hasaccess;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    @endphp
+<div class="d-flex justify-content-between align-items-center">
+    <h1>{{$roleActive}} Permissions</h1>
+    <div aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{route(\App\Constants\Routes::routeAdminDashboard)}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="#">Settings</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Permission</li>
+        </ol>
+    </div>
+</div>
+@php
+$hasAddFeature = false;
+if (count($features->features) > 0) {
+foreach ($features->features as $feature) {
+if ($feature['featslug'] == 'add') {
+foreach ($feature->permissions as $permission) {
+if ($permission->permisfeatid == $feature->id) {
+$hasAddFeature = $permission->hasaccess;
+break;
+}
+}
+}
+}
+}
+@endphp
 @endsection
 
 @section('content')
 <div class="card p-3">
-    <div class="card-header">
-        <h4>{{ $roleActive }}</h4>
+    <div class="card-header d-flex">
+        <h4 class="mt-2 me-3">Role</h4>
         <div class="card-header-form">
             <form method="GET" action="{{ route('permissions.index') }}">
                 <select class="form-select" name="role" onchange="this.form.submit()">
                     @if ($roleActiveId)
-                        <option value="{{ Crypt::encryptString($roleActiveId) }}">{{ $roleActive }}</option>
+                    <option value="{{ Crypt::encryptString($roleActiveId) }}">{{ $roleActive }}</option>
                     @endif
                     @foreach ($roles as $item)
-                        @if ($item->id != $roleActiveId)
-                            <option value="{{ Crypt::encryptString($item->id) }}">{{ $item->name }}</option>
-                        @endif
+                    @if ($item->id != $roleActiveId)
+                    <option value="{{ Crypt::encryptString($item->id) }}">{{ $item->name }}</option>
+                    @endif
                     @endforeach
                 </select>
             </form>
@@ -43,38 +52,36 @@
     <div class="card-body p-0 row">
         @php $i = 0; @endphp
         @foreach ($menus as $item)
-            @php $i++; @endphp
-            <div class="col-12 py-3 row" style="background-color: {{ $i % 2 == 0 ? '#f0f0f0' : 'transparent' }}">
-                <div class="col-2">
-                    {{ $item->menunm }}
-                </div>
-                @foreach ($item->features as $feature)
-                    <div class="col-2">
-                        {{ $feature->feattitle }}
-                        @php
-                            $isChecked = false;
-                            foreach ($data as $dataItem) {
-                                if ($feature->id == $dataItem->permisfeatid) {
-                                    $isChecked = true;
-                                    break;
-                                }
-                            }
-                        @endphp
-                        <form id="permission-form" class="form-check form-switch" action="{{ route('permission.toggle') }}" method="post">
-                            @csrf
-                            <input type="checkbox" 
-                                class="form-check-input" 
-                                style="width: 15px; height: 15px; background-color: {{ $isChecked ? '#1089ff' : '#ff4d4d' }};" 
-                                name="features[]" 
-                                value="{{ $feature->id }}"
-                                role="switch" 
-                                {{ $isChecked ? 'checked' : '' }}
-                                onchange="togglePermission(this)"  data-bs-toggle="tooltip" data-bs-placement="bottom" title={{ $isChecked ? 'Disallow' : 'Allow' }}>
-                            <input type="hidden" name="role" value="{{ $roleActiveId }}">
-                        </form>
-                    </div>
-                @endforeach
+        @php $i++; @endphp
+        <div class="col-12 py-3 row" style="background-color: {{ $i % 2 == 0 ? '#f0f0f0' : 'transparent' }}">
+            <div class="col-2">
+                {{ $item->menunm }}
             </div>
+            @foreach ($item->features as $feature)
+            <div class="col-2">
+                {{ $feature->feattitle }}
+                @php
+                $isChecked = false;
+                foreach ($data as $dataItem) {
+                if ($feature->id == $dataItem->permisfeatid) {
+                $isChecked = true;
+                break;
+                }
+                }
+                @endphp
+                <form id="permission-form" class="form-check form-switch" action="{{ route('permission.toggle') }}"
+                    method="post">
+                    @csrf
+                    <input type="checkbox" class="form-check-input"
+                        style="width: 15px; height: 15px; background-color: {{ $isChecked ? '#1089ff' : '#ff4d4d' }};"
+                        name="features[]" value="{{ $feature->id }}" role="switch" {{ $isChecked ? 'checked' : '' }}
+                        onchange="togglePermission(this)" data-bs-toggle="tooltip" data-bs-placement="bottom" title={{
+                        $isChecked ? 'Disallow' : 'Allow' }}>
+                    <input type="hidden" name="role" value="{{ $roleActiveId }}">
+                </form>
+            </div>
+            @endforeach
+        </div>
         @endforeach
     </div>
 </div>
