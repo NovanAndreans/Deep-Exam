@@ -61,7 +61,9 @@ class UserController extends Controller
         $features = $this->setFeatureSession(Routes::routeMasterUsers);
 
         $genders = $this->type->where('master_id', $this->type->getIdByCode(DBTypes::UserGender))->get();
-        $roles = $this->type->where('master_id', $this->type->getIdByCode(DBTypes::UserRole))->get();
+        $roles = $this->type->where('master_id', $this->type->getIdByCode(DBTypes::UserRole))->whereNotIn('id', [
+            $this->type->getIdByCode(DBTypes::RoleSuperAdmin)
+        ])->get();
         return view('AdminPages.Masters.Users.index', compact('roles', 'genders', 'features'));
     }
 

@@ -37,7 +37,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <!-- Styles -->
     <link  href="{{ asset('Admin/css/datatables.css') }}" rel="stylesheet">  
-    <link rel="stylesheet" href="{{ asset('aAdmin/lib/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('Admin/lib/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
 
     @stack('css')
 </head>
