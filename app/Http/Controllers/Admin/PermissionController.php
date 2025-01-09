@@ -105,7 +105,7 @@ class PermissionController extends Controller
 
         $features = $this->setFeatureSession(Routes::routeSettingPermission);
 
-        return view('Admin.Pages.Settings.permission', compact('roles', 'roleActive', 'data', 'menus', 'roleActiveId', 'features'));
+        return view('AdminPages.Settings.permission', compact('roles', 'roleActive', 'data', 'menus', 'roleActiveId', 'features'));
     }
 
     public function store(Request $request)

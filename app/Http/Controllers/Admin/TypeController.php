@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Constants\DBTypes;
+use App\Constants\FileDirectory;
 use App\Constants\Routes;
 use App\Http\Controllers\Controller;
+use App\Models\File;
 use App\Models\Menu;
 use App\Models\Type;
 use App\Models\User;
@@ -20,16 +22,18 @@ use Yajra\DataTables\Facades\DataTables;
 
 class TypeController extends Controller
 {
-    protected $user, $type, $menu;
+    protected $user, $type, $menu, $file;
 
-    public function __construct(User $user, Type $type, Menu $menu)
+    public function __construct(User $user, Type $type, Menu $menu, File $file)
     {
         $this->user = $user;
         $this->type = $type;
         $this->menu = $menu;
+        $this->file = $file;
     }
 
-    public function select(Request $request) {
+    public function select(Request $request)
+    {
         $id = $request->id;
         $data = $this->type->where('master_id', $id)->get();
 
@@ -87,7 +91,7 @@ class TypeController extends Controller
         $features = $this->setFeatureSession(Routes::routeSettingTypes);
         $parent = $this->type->where('master_id', null)->get();
 
-        return view('Admin.Pages.Settings.Types.index', compact('features', 'parent'));
+        return view('AdminPages.Settings.Types.index', compact('features', 'parent'));
     }
 
     /**
@@ -117,6 +121,12 @@ class TypeController extends Controller
             ->toArray();
 
         $data = $this->type->create($create);
+
+        if ($request->hasFile('picture')) {
+            $type = $this->type->getIdByCode(DBTypes::FileTypePic);
+
+            $this->uploadFile($request->file('picture'), $type, $data->id, $request->file('picture')->hashName(), FileDirectory::TypeFiles);
+        }
         return $this->success('Success Create New Type', $data);
     }
 
@@ -152,6 +162,13 @@ class TypeController extends Controller
             ->filter();
 
         $data->update($update->toArray());
+
+        if ($request->hasFile('picture')) {
+            $type = $this->type->getIdByCode(DBTypes::FileTypePic);
+
+            $this->uploadFile($request->file('picture'), $type, $data->id, $request->file('picture')->hashName(), FileDirectory::TypeFiles, $data->created_by);
+        }
+
         return $this->success('Success Update Type', $data);
     }
 
@@ -163,6 +180,12 @@ class TypeController extends Controller
         $data = $this->type->find($id);
         if (!$data)
             return $this->notFound();
+
+        $thumbnail = $this->file->where('transtypeid', $this->type->getIdByCode(DBTypes::FileTypePic))->where('refid', $id)->first();
+        if ($thumbnail) {
+            unlink(public_path("$thumbnail->directories/" . $thumbnail->filename));
+            $thumbnail->delete();
+        }
         $data->delete();
         return $this->success('Berhasil menghapus Type', $data);
     }

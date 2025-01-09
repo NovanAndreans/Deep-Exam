@@ -19,9 +19,9 @@
         <form class="d-flex justify-content-end">
           <div class="input-group">
             <input id="datatable-search" type="text" class="form-control" placeholder="Search">
-            <button id="basic-addon2" type="button" onclick="addForm('{{ route('users.store') }}')"
-              class="input-group-text btn btn-success btn-sm btn-flat">
-              <i class="fa fa-plus-circle"></i> Tambah
+            <button id="basic-addon2" type="button"
+              class="input-group-text btn btn-info btn-sm btn-flat">
+              <i class="fa fa-search"></i> Tambah
             </button>
           </div>
         </form>
@@ -36,8 +36,9 @@
           <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
+            <th>Type</th>
+            <th>Mimetype</th>
+            <th>Size</th>
             <th>Action</th>
           </tr>
         </thead>

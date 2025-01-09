@@ -63,11 +63,11 @@ break;
 @endsection
 
 @section('content')
-@includeIf('AdminPages.Masters.Users.datatable')
+@includeIf('AdminPages.Settings.Types.datatable')
 @endsection
 
 @section('content-modal')
-@includeIf('AdminPages.Masters.Users.form')
+@includeIf('AdminPages.Settings.Types.form')
 @endsection
 
 @push('script')
@@ -88,11 +88,9 @@ break;
           },
           pageLength: 5,
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-            {data: 'name', name: 'name'},
-            {data: 'email', name: 'email'},
-            {data: 'roles', name: 'roles'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
+              {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+              {data: 'name', name: 'name'},
+              {data: 'children', name: 'children'},
           ]
     });
     // Change page length on dropdown change
@@ -153,7 +151,7 @@ break;
         return
       }
       $('#modal-form').modal('show');
-      $('#modal-form .modal-title').text('Tambah User');
+      $('#modal-form .modal-title').text('Tambah Type');
 
       $('#modal-form form')[0].reset();
       $('#modal-form form').attr('action', url);
@@ -182,15 +180,10 @@ break;
       $('#modal-form [name=_method]').val('put');
       $('#modal-form [name=name]').focus();
 
-      $('#password, #password_confirmation').attr('required', false);
-
       $.get(url)
           .done((response) => {
-              $('#modal-form [name=role_id]').val(response?.data?.role_id ?? '');
+              $('#modal-form [name=master_id]').val(response?.data?.master_id ?? '');
               $('#modal-form [name=name]').val(response?.data?.name ?? '');
-              $('#modal-form [name=gender_id]').val(response?.data?.gender_id ?? '');
-              $('#modal-form [name=username]').val(response?.data?.username ?? '');
-              $('#modal-form [name=email]').val(response?.data?.email ?? '');
           })
           .fail((errors) => {
               alert('Tidak dapat menampilkan data');
