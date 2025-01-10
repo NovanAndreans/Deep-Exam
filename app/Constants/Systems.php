@@ -8,4 +8,5 @@ class Systems
     const sessionError = 'error';
 
     const sessionMenus = 'menus';
+    const sessionUserProfilePicture = 'userProfilePicture';
 }

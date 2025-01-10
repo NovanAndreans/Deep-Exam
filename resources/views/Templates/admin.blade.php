@@ -2,7 +2,10 @@
 <html lang="en">
 
 @include('Templates.AdminComponents.header')
-
+<?php 
+  $menus = session()->get(\App\Constants\Systems::sessionMenus);
+  $pp = session()->get(\App\Constants\Systems::sessionUserProfilePicture);
+?>
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->

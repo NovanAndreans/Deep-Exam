@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\Systems;
 use App\Models\File;
 use App\Models\Menu;
+use App\Services\UserService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Auth;
@@ -43,6 +44,12 @@ abstract class Controller
     public function notFound($message = 'Data Not Found!')
     {
         return response()->json(['message' => $message], 404);
+    }
+
+    public function setUserSession() {
+        $service = new UserService();
+        $user = $service->getQuery()->find(Auth::user()->id);
+        session()->put(Systems::sessionUserProfilePicture, $user->photoProfile->url ?? null);
     }
 
     public function setMenuSession()

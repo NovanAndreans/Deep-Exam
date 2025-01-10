@@ -92,6 +92,7 @@ class AuthController extends Controller
     public function signout()
     {
         Auth::logout();
+        session()->flush();
         $this->successToast('Signout Success\n Anda berhasil Logout');
         return redirect()->route(Routes::routeGuestHome);
     }

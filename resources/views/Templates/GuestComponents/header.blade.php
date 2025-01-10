@@ -28,4 +28,6 @@
 
     <!-- Template Stylesheet -->
     <link href="{{asset('Guest/css/style.css')}}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ asset('Guest/lib/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
 </head>

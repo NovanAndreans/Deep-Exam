@@ -8,3 +8,30 @@
 
 <!-- Template Javascript -->
 <script src="{{asset('Guest/js/main.js')}}"></script>
+<!-- Notification Scripts -->
+<script src="{{ asset('Guest/lib/sweetalert2/sweetalert2.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+
+    var Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+
+    @if(Session::has('success'))
+      Toast.fire({
+        icon: 'success',
+        title: "{{ Session::get('success') }}"
+      });
+    @endif
+
+    @if(Session::has('error'))
+      Toast.fire({
+        icon: 'error',
+        title: "{{ Session::get('error') }}"
+      });
+    @endif
+  });
+</script>

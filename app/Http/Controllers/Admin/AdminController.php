@@ -10,6 +10,7 @@ class AdminController extends Controller
 {
     public function home() : View {
         $this->setMenuSession();
+        $this->setUserSession();
         return view('AdminPages.dashboard');
     }
 }
