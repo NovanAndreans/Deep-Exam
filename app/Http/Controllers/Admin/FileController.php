@@ -104,7 +104,7 @@ class FileController extends Controller
         if (!$data)
             return $this->notFound();
 
-        unlink(public_path("$data->directories/" . $data->filename));
+        $this->deleteFile($data->directories, $data->filename);
 
         $data->delete();
         return $this->success('Success Delete File', $data);

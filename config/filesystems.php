@@ -31,8 +31,7 @@ return [
     'disks' => [
         'root_public' => [
             'driver' => 'local',
-            'root' => public_path('/'),
-            // 'root' => '/home/andq5672/public_html/',
+            'root' => env('APP_ROOT', public_path()),
             'url' => env('APP_URL'),
             'visibility' => 'public',
         ],

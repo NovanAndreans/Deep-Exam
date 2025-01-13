@@ -183,7 +183,7 @@ class TypeController extends Controller
 
         $thumbnail = $this->file->where('transtypeid', $this->type->getIdByCode(DBTypes::FileTypePic))->where('refid', $id)->first();
         if ($thumbnail) {
-            unlink(public_path("$thumbnail->directories/" . $thumbnail->filename));
+            $this->deleteFile($thumbnail->directories, $thumbnail->filename);
             $thumbnail->delete();
         }
         $data->delete();

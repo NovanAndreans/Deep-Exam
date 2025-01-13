@@ -184,7 +184,7 @@ class UserController extends Controller
 
         $thumbnail = $this->file->where('transtypeid', $this->type->getIdByCode(DBTypes::FileProfilePic))->where('refid', $id)->first();
         if ($thumbnail) {
-            unlink(public_path("$thumbnail->directories/" . $thumbnail->filename));
+            $this->deleteFile($thumbnail->directories, $thumbnail->filename);
             $thumbnail->delete();
         }
 

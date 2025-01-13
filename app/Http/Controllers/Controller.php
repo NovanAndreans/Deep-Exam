@@ -46,7 +46,8 @@ abstract class Controller
         return response()->json(['message' => $message], 404);
     }
 
-    public function setUserSession() {
+    public function setUserSession()
+    {
         $service = new UserService();
         $user = $service->getQuery()->find(Auth::user()->id);
         session()->put(Systems::sessionUserProfilePicture, $user->photoProfile->url ?? null);
@@ -95,7 +96,7 @@ abstract class Controller
 
             $oldFile = $filesService->where('refid', $refid)->where('transtypeid', $type)->first();
             if ($oldFile) {
-                unlink(public_path("$directory/" . $oldFile->filename));
+                $this->deleteFile($directory, $oldFile->filename);
                 $oldFile->delete();
             }
 
@@ -114,7 +115,6 @@ abstract class Controller
                 $filesService->create($data);
             }
         } else {
-            // $result = $file->move(public_path($directory), $filename);
             $result = $file->storeAs($directory, $filename, 'root_public');
             if ($result) {
                 $data = [];
@@ -129,5 +129,13 @@ abstract class Controller
                 $filesService->create($data);
             }
         }
+    }
+
+    public function deleteFile($directory, $filename)
+    {
+        $publicPath = rtrim(env('APP_ROOT', public_path()), '/');
+        $fullPath = $publicPath . "/$directory/" . $filename;
+        if (file_exists($fullPath))
+            unlink($fullPath);
     }
 }
