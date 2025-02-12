@@ -21,6 +21,7 @@ class Routes
     const routeAdminDashboard = 'dashboard';
 
     const routeMasterUsers = 'users.index';
+    const routeMasterRps = 'rps.index';
 
     const routeSettingPermission = 'permissions.index';
     const routeSettingFiles = 'files.index';

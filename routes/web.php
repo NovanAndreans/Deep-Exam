@@ -2,15 +2,21 @@
 
 use App\Constants\Routes;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\FileController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\TypeController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\Settings\{
+    FileController, 
+    PermissionController, 
+    TypeController
+};
+use App\Http\Controllers\Admin\Masters\{
+    LessonController,
+    MeetingController,
+    RpsController,
+    SubCpmkController,
+    UserController
+};
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guest\GuestController;
 use Illuminate\Support\Facades\Route;
-
-
 
 Route::middleware('guest')->group(function () {
     Route::get('/', [GuestController::class, 'home'])->name(Routes::routeGuestHome);
@@ -33,6 +39,13 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'home'])->name(Routes::routeAdminDashboard);
     Route::group(['prefix' => 'masters'], function () {
         Route::resource('users', UserController::class);
+
+        Route::resource('rps', RpsController::class);
+        Route::get('rps/detail/{id}', [RpsController::class, 'subCpmkView'])->name('rps.subCpmk');
+
+        Route::resource('subcpmk', SubCpmkController::class);
+        Route::resource('meeting', MeetingController::class);
+        Route::get('meeting/generate-kisi/{id}', [MeetingController::class, 'generateKisi'])->name('meeting.generate-kisi');
     });
 
     Route::group(['prefix' => 'settings'], function () {

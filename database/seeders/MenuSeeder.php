@@ -55,6 +55,33 @@ class MenuSeeder extends Seeder
                         ],
                     ]
                 ],
+                [
+                    'menuroute' => Routes::routeMasterRps,
+                    'menunm' => 'Master RPS',
+                    'menuicon' => 'fa fa-book',
+                    'features' => [
+                        [
+                            'feattitle' => 'View',
+                            'featslug' => 'view',
+                        ],
+                        [
+                            'feattitle' => 'Add',
+                            'featslug' => 'add',
+                        ],
+                        [
+                            'feattitle' => 'Edit',
+                            'featslug' => 'edit',
+                        ],
+                        [
+                            'feattitle' => 'Delete',
+                            'featslug' => 'delete',
+                        ],
+                        [
+                            'feattitle' => 'Kisi2',
+                            'featslug' => 'kisi2',
+                        ],
+                    ]
+                ],
             ]
         ],
         [

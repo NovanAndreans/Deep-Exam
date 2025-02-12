@@ -2,13 +2,15 @@
 
 namespace App\Constants;
 
-
 class AiText
 {
-    public static function MbtiGenerateQuestion(int $jumlah, string $text, string $desc)
+    public static function GenerateKisi($materi, $desc, $subcpmk)
     {
-        return 'Buatkan ' . $jumlah . ' pertanyaan untuk test mbti dimensi ' . $text . '(' . $desc . ')' . '\n\n\n buat soal seperti ini : ' . JsonExample::MbtiGenerateQuestion . ' dan response menjadi format JSON. 
-        tambahan : pastikan key nya sama dengan yang dicontoh!!! & 
-        answers harus berjumlah 5!!!';
+        return "Buatkan kisi-kisi yang berupa contoh pertanyaan dengan materi ".$materi." 
+        dengan deskripsi ".$desc." dan subcpmk ".$subcpmk.". 
+        Buatkan kisi-kisi pertanyaan dari materi tersebut sesuai 
+        taksonomi bloom kriteria afektif dan kognitif 1 hingga 6.
+        berikan jawaban dengan format json seperti berikut:
+        ".JsonExample::KisiKisiLesson."\n langsung JSON jangan string !!!";
     }
 }

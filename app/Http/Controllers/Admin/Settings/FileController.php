@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Settings;
 
 use App\Constants\Routes;
 use App\Http\Controllers\Controller;
@@ -35,7 +35,7 @@ class FileController extends Controller
                 ->addColumn('action', function ($row) {
                     $url = url("$row->directories/$row->filename");
                     $btn = '
-                        <btn onclick="viewImg(`' . $url . '`, `'.$row->filename.'`)" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat"><i class="fa fa-eye"></i></btn>
+                        <btn onclick="viewImg(`' . $url . '`, `' . $row->filename . '`)" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat"><i class="fa fa-eye"></i></btn>
                         <btn onclick="deleteData(`' . route('files.destroy', $row->id) . '`)" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fa fa-trash"></i></btn>
                     ';
                     return $btn;

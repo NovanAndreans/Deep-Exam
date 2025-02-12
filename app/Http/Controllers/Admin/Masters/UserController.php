@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Masters;
 
 use App\Constants\DBTypes;
 use App\Constants\FileDirectory;
@@ -189,6 +189,6 @@ class UserController extends Controller
         }
 
         $data->delete();
-        return $this->success('Success Update pengguna', $data);
+        return $this->success('Success Hapus pengguna', $data);
     }
 }

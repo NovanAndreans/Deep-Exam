@@ -12,23 +12,19 @@
   .toggle-password:hover {
     color: #000;
   }
-
-  .dataTables_length {
-    display: none !important;
-  }
 </style>
 @endpush
 
 @section('content-header')
 <div class="d-flex justify-content-between align-items-center">
-    <h1>Settings Types</h1>
-    <div aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{route(\App\Constants\Routes::routeAdminDashboard)}}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="#">Settings</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Types</li>
-        </ol>
-    </div>
+  <h1>Settings Types</h1>
+  <div aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{route(\App\Constants\Routes::routeAdminDashboard)}}">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="#">Settings</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Types</li>
+    </ol>
+  </div>
 </div>
 @php
 $hasAddFeature = false;

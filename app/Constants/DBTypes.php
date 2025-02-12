@@ -19,4 +19,10 @@ class DBTypes
     const FileTypes = 'fileTypes';
     const FileTypePic = 'fileTypePic';
     const FileProfilePic = 'fileProfPic';
+    const FileLessonRps = 'fileLessRps';
+    const FileLessonLampiran = 'fileLessLamp';
+
+    const LessonStatus = 'RpsStats';
+    const LessonStatusActive = 'RpsStatsActive';
+    const LessonStatusNonActive = 'RpsStatsNonActive';
 }

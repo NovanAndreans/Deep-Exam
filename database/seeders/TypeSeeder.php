@@ -73,6 +73,22 @@ class TypeSeeder extends Seeder
                 ]
             ]
         ],
+        [
+            'code' => DBTypes::LessonStatus,
+            'name' => 'Lesson Status',
+            'children' => [
+                [
+                    'name' => 'Active',
+                    'desc' => 'important',
+                    'code' => DBTypes::LessonStatusActive
+                ],
+                [
+                    'name' => 'Non-Active',
+                    'desc' => 'important',
+                    'code' => DBTypes::LessonStatusNonActive
+                ]
+            ]
+        ],
     ];
     /**
      * Run the database seeds.

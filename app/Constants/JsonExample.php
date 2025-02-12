@@ -4,60 +4,66 @@ namespace App\Constants;
 
 class JsonExample
 {
-  const MbtiGenerateQuestion = <<<JSON
-{
-  "questions":  [
+  const KisiKisiLesson = <<<JSON
+[
     {
-      "question": "Are you INFJ",
-      "answers": [
+      "taksonomi_bloom": "Afektif",
+      "isi": [
         {
-          "answer": "Sangat Setuju",
-          "value": 2
+          "type": "A1",
+          "question": "...."
         },
         {
-          "answer": "Setuju",
-          "value": 1
+          "type": "A2",
+          "question": "...."
         },
         {
-          "answer": "Netral",
-          "value": 0
+          "type": "A3",
+          "question": "...."
         },
         {
-          "answer": "Tidak Setuju",
-          "value": -1
+          "type": "A4",
+          "question": "...."
         },
         {
-          "answer": "Sangat Tidak Setuju",
-          "value": -2
+          "type": "A5",
+          "question": "...."
+        },
+        {
+          "type": "A6",
+          "question": "...."
         }
       ]
     },
     {
-      "question": "Kapan anda merasa senang",
-      "answers": [
+      "taksonomi_bloom": "Kognitif",
+      "kisi-kisi": [
         {
-          "answer": "saat pesta",
-          "value": 2
+          "type": "C1",
+          "question": "...."
         },
         {
-          "answer": "saat dengan teman",
-          "value": 1
+          "type": "C2",
+          "question": "...."
         },
         {
-          "answer": "selalu senang",
-          "value": 0
+          "type": "C3",
+          "question": "...."
         },
         {
-          "answer": "saat memikirkan sesuatu",
-          "value": -1
+          "type": "C4",
+          "question": "...."
         },
         {
-          "answer": "saat sendirian",
-          "value": -2
+          "type": "C5",
+          "question": "...."
+        },
+        {
+          "type": "C6",
+          "question": "...."
         }
       ]
     }
   ]
-}
 JSON;
 }

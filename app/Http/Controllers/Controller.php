@@ -6,10 +6,15 @@ use App\Constants\Systems;
 use App\Models\File;
 use App\Models\Menu;
 use App\Services\UserService;
+use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use OpenAI\Laravel\Facades\OpenAI;
+use PhpOffice\PhpWord\IOFactory;
+use Smalot\PdfParser\Parser;
 
 abstract class Controller
 {
@@ -137,5 +142,32 @@ abstract class Controller
         $fullPath = $publicPath . "/$directory/" . $filename;
         if (file_exists($fullPath))
             unlink($fullPath);
+    }
+
+    public function generateAI($prompt)
+    {
+        // Panggil API OpenAI
+        $result = OpenAI::chat()->create([
+            'model' => 'gpt-3.5-turbo',
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt],
+            ],
+        ]);
+
+        // Ambil konten keluaran
+        $output = $result->choices[0]->message->content;
+
+        return $output;
+    }
+
+    public function generateAIGemini($prompt, $file = null)
+    {
+        // Panggil API OpenAI
+        $result = Gemini::geminiPro()->generateContent($prompt);
+
+        // Ambil konten keluaran
+        $output = $result->text();
+
+        return $output;
     }
 }

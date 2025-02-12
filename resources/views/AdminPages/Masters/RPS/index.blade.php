@@ -1,28 +1,15 @@
 @extends('Templates.admin')
 
-@section('title', 'Master Users')
-
-@push('css')
-<style>
-  .toggle-password {
-    cursor: pointer;
-    color: #6c757d;
-  }
-
-  .toggle-password:hover {
-    color: #000;
-  }
-</style>
-@endpush
+@section('title', 'Master RPS')
 
 @section('content-header')
 <div class="d-flex justify-content-between align-items-center">
-  <h1>Master Users</h1>
+  <h1>Master RPS</h1>
   <div aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{route(\App\Constants\Routes::routeAdminDashboard)}}">Dashboard</a></li>
       <li class="breadcrumb-item"><a href="#">Masters</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Users</li>
+      <li class="breadcrumb-item active" aria-current="page">RPS</li>
     </ol>
   </div>
 </div>
@@ -68,11 +55,11 @@ break;
 @endsection
 
 @section('content')
-@includeIf('AdminPages.Masters.Users.datatable')
+@includeIf('AdminPages.Masters.RPS.datatable')
 @endsection
 
 @section('content-modal')
-@includeIf('AdminPages.Masters.Users.form')
+@includeIf('AdminPages.Masters.RPS.form')
 @endsection
 
 @push('script')
@@ -94,10 +81,9 @@ break;
           pageLength: 5,
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-            {data: 'name', name: 'name'},
-            {data: 'email', name: 'email'},
-            {data: 'roles', name: 'roles'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
+            {data: 'title', name: 'title'},
+            {data: 'cpmk', name: 'cpmk'},
+            {data: 'action', name: 'action', width: 100, orderable: false, searchable: false},
           ]
     });
     // Change page length on dropdown change
@@ -110,41 +96,40 @@ break;
 
   $(document).ready(function () {
         $(document).on('submit', '#modal-form form', function (e) {
-        e.preventDefault();
+          e.preventDefault();
 
-        let form = $(this)[0];  // Ambil elemen form pertama
-        let formData = new FormData(form);  // Buat FormData dari elemen form
+          let form = $(this)[0];  // Ambil elemen form pertama
+          let formData = new FormData(form);  // Buat FormData dari elemen form
 
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,  // Jangan mengubah data form menjadi query string
-            contentType: false,  // Jangan mengatur konten header
-        })
-        .done((response) => {
-            console.log('AJAX success', response);
-            $('#modal-form').modal('hide');
-            setSuccess(response?.message ?? 'Berhasil!');
-            table.ajax.reload();
-        })
-        .fail((xhr) => {
-            let message = 'Tidak dapat menyimpan data';
-            if (xhr.status === 400 || xhr.status === 403) {
-                let responseJSON = xhr.responseJSON || {};
-                if (responseJSON.message) {
-                    message = responseJSON.message;
-                }
-            }
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: message
-            });
-        });
+          $.ajax({
+              url: $(this).attr('action'),
+              type: 'POST',
+              data: formData,
+              processData: false,  // Jangan mengubah data form menjadi query string
+              contentType: false,  // Jangan mengatur konten header
+          })
+          .done((response) => {
+              console.log('AJAX success', response);
+              $('#modal-form').modal('hide');
+              setSuccess(response?.message ?? 'Berhasil!');
+              table.ajax.reload();
+          })
+          .fail((xhr) => {
+              let message = 'Tidak dapat menyimpan data';
+              if (xhr.status === 400 || xhr.status === 403) {
+                  let responseJSON = xhr.responseJSON || {};
+                  if (responseJSON.message) {
+                      message = responseJSON.message;
+                  }
+              }
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: message
+              });
+          });
       });
-
-    });
+  });
 
   function addForm(url) {
     const hasAddFeature = {{ isset($hasAddFeature) ? json_encode($hasAddFeature) : 'null' }};
@@ -158,14 +143,12 @@ break;
         return
       }
       $('#modal-form').modal('show');
-      $('#modal-form .modal-title').text('Tambah User');
+      $('#modal-form .modal-title').text('Tambah RPS');
 
       $('#modal-form form')[0].reset();
       $('#modal-form form').attr('action', url);
       $('#modal-form [name=_method]').val('post');
-      $('#modal-form [name=name]').focus();
-
-      $('#password, #password_confirmation').attr('required', true);
+      $('#modal-form [name=materi]').focus();
   }
 
   function editForm(url) {  
@@ -180,22 +163,18 @@ break;
         return
       }
       $('#modal-form').modal('show');
-      $('#modal-form .modal-title').text('Edit User');
+      $('#modal-form .modal-title').text('Edit RPS');
 
       $('#modal-form form')[0].reset();
       $('#modal-form form').attr('action', url);
       $('#modal-form [name=_method]').val('put');
       $('#modal-form [name=name]').focus();
 
-      $('#password, #password_confirmation').attr('required', false);
-
       $.get(url)
           .done((response) => {
-              $('#modal-form [name=role_id]').val(response?.data?.role_id ?? '');
-              $('#modal-form [name=name]').val(response?.data?.name ?? '');
-              $('#modal-form [name=gender_id]').val(response?.data?.gender_id ?? '');
-              $('#modal-form [name=username]').val(response?.data?.username ?? '');
-              $('#modal-form [name=email]').val(response?.data?.email ?? '');
+              $('#modal-form [name=title]').val(response?.data?.title ?? '');
+              $('#modal-form [name=desc]').val(response?.data?.desc ?? '');
+              $('#modal-form [name=cpmk]').val(response?.data?.cpmk ?? '');
           })
           .fail((errors) => {
               alert('Tidak dapat menampilkan data');
