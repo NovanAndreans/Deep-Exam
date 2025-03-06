@@ -92,7 +92,7 @@ break;
             <div class="d-flex align-items-center border-bottom py-2 subcpmk-item" data-id="{{$subCpmk->id}}">
                 <div class="w-100 ms-3">
                     <div class="d-flex w-100 align-items-center justify-content-between">
-                        <span class="subcpmk-text">{{$subCpmk->subcpmk}}</span>
+                        <span class="subcpmk-text">{{$subCpmk->subcpmk}} <div class="badge bg-success subcpmk-text-limit">{{$subCpmk->limit_bloom}}</div></span>
                         <input class="subcpmk-input form-control d-none" type="text" value="{{$subCpmk->subcpmk}}">
                         <div>
                             <button class="btn btn-sm btn-outline-warning edit-btn"><i class="fa fa-edit"></i></button>
@@ -210,7 +210,7 @@ break;
                     <div class="d-flex align-items-center border-bottom py-2 subcpmk-item" data-id="${response.data.id}">
                         <div class="w-100 ms-3">
                             <div class="d-flex w-100 align-items-center justify-content-between">
-                                <span class="subcpmk-text">${response.data.subcpmk}</span>
+                                <span class="subcpmk-text">${response.data.subcpmk} <div class="badge bg-success subcpmk-text-limit">${response.data.limit_bloom}</div></span>
                                 <input class="subcpmk-input form-control d-none" type="text" value="${response.data.subcpmk}">
                                 <div>
                                     <button class="btn btn-sm btn-outline-warning edit-btn"><i class="fa fa-edit"></i></button>
@@ -227,6 +227,7 @@ break;
                     document.getElementById('subCpmkList').insertAdjacentHTML('beforeend', newElement);
                     document.getElementById('new-subcpmk').value = "";
                     addEventListeners();
+                    window.location.reload()
                 } else {
                     alert('Gagal menambahkan Sub CPMK.');
                 }
@@ -259,6 +260,7 @@ break;
             button.addEventListener('click', function() {
                 let parent = this.closest('.subcpmk-item');
                 let text = parent.querySelector('.subcpmk-text');
+                let limit = parent.querySelector('.subcpmk-text-limit');
                 let input = parent.querySelector('.subcpmk-input');
                 let editBtn = parent.querySelector('.edit-btn');
                 let deleteBtn = parent.querySelector('.delete-btn');
@@ -279,11 +281,13 @@ break;
                     success: function(response) {
                         if (response.message) {
                             text.textContent = updatedValue;
+                            limit.textContent = response.data.limit_bloom;
                             text.classList.remove('d-none');
                             input.classList.add('d-none');
                             button.classList.add('d-none');
                             editBtn.classList.remove('d-none');
                             deleteBtn.classList.remove('d-none');
+                            window.location.reload()
                         } else {
                             alert('Gagal memperbarui Sub CPMK.');
                         }
@@ -308,8 +312,6 @@ break;
 
         let meetingHtml = '';
         meetings.forEach(meeting => {
-            console.log(meeting);
-            
             meetingHtml += `
                 <div class="border-bottom py-2 d-flex justify-content-between align-items-center">
                     <div>

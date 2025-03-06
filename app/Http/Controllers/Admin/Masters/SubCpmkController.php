@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Masters;
 
+use App\Constants\AiText;
 use App\Http\Controllers\Controller;
 use App\Models\SubCPMK;
 use Illuminate\Http\Request;
@@ -45,7 +46,10 @@ class SubCpmkController extends Controller
             return $this->failed($validator->errors()->first());
         // End Validator
 
+        $limit = $this->generateAI(AiText::CheckSubCpmkLimit($request->subcpmk));
+
         $create = collect($request->only($this->subCpmk->getFillable()))
+            ->put('limit_bloom', $limit)
             ->filter()
             ->toArray();
 
@@ -81,7 +85,10 @@ class SubCpmkController extends Controller
         if (!$data)
             return $this->notFound();
 
+        $limit = $this->generateAI(AiText::CheckSubCpmkLimit($request->subcpmk));
+        
         $update = collect($request->only($this->subCpmk->getFillable()))
+            ->put('limit_bloom', $limit)
             ->filter();
 
         $data->update($update->toArray());

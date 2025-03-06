@@ -36,11 +36,11 @@ class MeetingController extends Controller
         $subCpmk = "";
 
         foreach ($data->subCpmk as $key => $value) {
-            $subCpmk .= $value->subcpmk . " , ";
+            $subCpmk .= $value->subcpmk . " dengan limit KKO Taksonomi Bloom ". $value->limit_bloom . " , ";
         }
 
         // Ambil respons AI
-        $text = $this->generateAIGemini(AiText::GenerateKisi($data->title, $data->desc, $subCpmk));
+        $text = $this->generateAI(AiText::GenerateKisi($data->title, $data->desc, $subCpmk));
 
         // Bersihkan output dari blok kode yang tidak diperlukan
         $text = preg_replace('/^```json|```$/', '', trim($text));

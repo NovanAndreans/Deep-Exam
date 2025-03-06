@@ -146,26 +146,17 @@ abstract class Controller
 
     public function generateAI($prompt)
     {
-        // Panggil API OpenAI
-        $result = OpenAI::chat()->create([
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt],
-            ],
-        ]);
+        // INI OPEN AI
+        // $result = OpenAI::chat()->create([
+        //     'model' => 'gpt-3.5-turbo',
+        //     'messages' => [
+        //         ['role' => 'user', 'content' => $prompt],
+        //     ],
+        // ]);
+        // $output = $result->choices[0]->message->content;
 
-        // Ambil konten keluaran
-        $output = $result->choices[0]->message->content;
-
-        return $output;
-    }
-
-    public function generateAIGemini($prompt, $file = null)
-    {
-        // Panggil API OpenAI
+        // INI GEMINI
         $result = Gemini::geminiPro()->generateContent($prompt);
-
-        // Ambil konten keluaran
         $output = $result->text();
 
         return $output;

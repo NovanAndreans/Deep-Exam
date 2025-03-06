@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('sub_cpmks', function (Blueprint $table) use ($rps) {
             $table->id();
             $table->string('subcpmk');
+            $table->integer('limit_bloom');
             $table->foreignId('cpmk_id');
             $table->timestamps();
 
