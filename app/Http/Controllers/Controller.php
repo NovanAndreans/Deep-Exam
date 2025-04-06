@@ -6,6 +6,8 @@ use App\Constants\Systems;
 use App\Models\File;
 use App\Models\Menu;
 use App\Services\UserService;
+use DeepSeek\DeepSeekClient;
+use Gemini\Enums\ModelType;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -156,9 +158,14 @@ abstract class Controller
         // $output = $result->choices[0]->message->content;
 
         // INI GEMINI
-        $result = Gemini::geminiPro()->generateContent($prompt);
+        $result = Gemini::generativeModel(ModelType::GEMINI_FLASH)->generateContent($prompt);
         $output = $result->text();
 
         return $output;
+
+        // INI DEEPSEEK
+        // $deepseek = app(DeepSeekClient::class);
+        // $response = $deepseek->query($prompt)->run();
+        // return $response;
     }
 }

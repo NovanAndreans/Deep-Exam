@@ -6,6 +6,7 @@ use App\Constants\AiText;
 use App\Http\Controllers\Controller;
 use App\Models\SubCPMK;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SubCpmkController extends Controller
@@ -47,6 +48,8 @@ class SubCpmkController extends Controller
         // End Validator
 
         $limit = $this->generateAI(AiText::CheckSubCpmkLimit($request->subcpmk));
+
+        Log::error($limit);
 
         $create = collect($request->only($this->subCpmk->getFillable()))
             ->put('limit_bloom', $limit)

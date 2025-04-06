@@ -23,6 +23,17 @@ class MenuSeeder extends Seeder
             ]
         ],
         [
+            'menuroute' => Routes::routeQuiz,
+            'menunm' => 'Quiz',
+            'menuicon' => 'fas fa-list-alt',
+            'features' => [
+                [
+                    'feattitle' => 'View',
+                    'featslug' => 'view',
+                ]
+            ]
+        ],
+        [
             'menunm' => 'Masters',
             'menuicon' => 'fas fa-folder',
             'features' => [

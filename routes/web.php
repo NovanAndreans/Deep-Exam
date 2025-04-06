@@ -3,8 +3,8 @@
 use App\Constants\Routes;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\Settings\{
-    FileController, 
-    PermissionController, 
+    FileController,
+    PermissionController,
     TypeController
 };
 use App\Http\Controllers\Admin\Masters\{
@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\Masters\{
 };
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guest\GuestController;
+use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -37,6 +38,11 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/signout', [AuthController::class, 'signout'])->name(Routes::routeSignout);
 
     Route::get('/dashboard', [AdminController::class, 'home'])->name(Routes::routeAdminDashboard);
+
+    Route::resource('quiz', QuizController::class);
+    Route::get('quiz/{id}/progress', [QuizController::class, 'progress'])->name(Routes::routeQuizProgress);
+    Route::get('quiz/progress/result', [QuizController::class, 'result'])->name(Routes::routeQuizResult);
+
     Route::group(['prefix' => 'masters'], function () {
         Route::resource('users', UserController::class);
 

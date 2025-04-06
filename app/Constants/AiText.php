@@ -26,6 +26,6 @@ class AiText
         C5-Mengevaluasi Menilai Menyimpulkan Membuktikan, dan C6-Menciptakan Membangun Merancang Mengkombinasikan). 
         \nCek berapakah level KKO Taksonomi Bloom dari 
         Sub CPMK ini " . $subcpmk . "
-         \n kembalikan nilai dalam bentuk integer (misal : 1, bukan C1)";
+         \n berikan jawaban dalam format integer 1 digit";
     }
 }

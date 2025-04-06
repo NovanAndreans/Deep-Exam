@@ -19,6 +19,11 @@ class Routes
     const routeSignout = 'signout';
 
     const routeAdminDashboard = 'dashboard';
+    
+    const routeQuiz = 'quiz.index';
+    const routeQuizDt = 'quiz.dt';
+    const routeQuizProgress = 'quiz.progress';
+    const routeQuizResult = 'quiz.results';
 
     const routeMasterUsers = 'users.index';
     const routeMasterRps = 'rps.index';

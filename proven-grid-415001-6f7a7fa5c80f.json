@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "proven-grid-415001",
+  "private_key_id": "6f7a7fa5c80f6f77107e299ef99beda2426722f8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDFp+Te5WDtL4ow\nRjzATNM0Mh3eqiWNfDuiFYKmlkzjn2TfgikEvLyqGb8lfagPpW+o1nr1rWrlpS8S\n4JRRNn5OyXuJoX3ovfmIVUJNvoRvP/zRQY+zLdpWNvyPYphlPKMRq6Zv3liggPGa\nqT/jagydmjfZgtbiWvvbowyYyTN/K2GiOGq1NOnaC/rFcG8MBlbqI1+2MesrBHnN\nXm5josDjDfZltZe9ls/lupsvXm4ouZBwozOY/GD5O3ZNC+ozN3YKWY1tVu1FCX2w\nJCrdtSyAsv43fgZDXOOO6pq57UPU9vZchiodnUz/5RePhamkpQAcdBs0aNZG43Zy\nKEQTw9g3AgMBAAECggEAFMW1zGUP4C1wWO1wwgbw5VnlALsh8jIdtEWNcwN1tjBQ\nshqkQ+6v5zKIf6CqkmZhCz3rMzmT8+l9vn6ip7xR3ubW2FqD+HtKp7TKIJCGq4hu\ngfFhcEO/3/KsbUc/29fZDWjcN4KHDusuOQJTiAtjowaLmwzgl25XbLhAgSgYBOOz\nUx/nwCSw2MFvDzjvZXBA2Q43J3kSQw9Lw36+D63rBMOjvsRVbKARSXMM52ZvuKp2\nMsG3uIKxU6dvVWGo1asNihnLYbFO+5as26lwBHYRfvoaKoS/3XfO0ZcDHA51A7Ct\nhFyKSE1WhtPvX+RIymenGWQLMKUQDZWzP3jCttHAeQKBgQDznh9NlQcogBva6M3q\nBHhGDVFjwH6HEj9QOyOaGaBKl4pK0WJCivhY4Iw32zPlv9zX8QGJZ2F3H/43gdNi\nVxO9WNZo63GmyvSVHyy1u4IaR9XB9oYnYF1tFGesQ4LQgivBoRAc7ZTtG0mCFT+c\nZpLpiDP2BkQSBkJGUhxkVPFAOQKBgQDPs7sLUe5rh9S86amm0hUD3FDtKNruCzhR\nXj/AhKmok9uEr4x5AunFqzOdnHvkC6LV2pFsQxiklxsy+yGzdx50UNLoUCNb9tn1\n8/3rEuuBGEz6XhyZBRgFTaxxDXLd1/sgn1wCah9/+2mHUqCRzEMO0+pWjU4NxE8p\npsOqrxn77wKBgQCNwennJBvJNlp/FE6VqMovwRomGGHHyRdsYS1DQzwhi3KePJ6X\np/QBC5CsA/J78xvXz9acFLsDLWuo8vOE2rSSznndDXvRmXGewEgs65I2Jqy8s+22\nRf23NlNpStN47vX1MvqESr8JBYLNnf2ozYsZNvc9ZsH/VwMDlk4NF9xWCQKBgQCx\nS+PDYvnZUoZ3iCIoY7ZKqFtwRmqzvmIhmwlihhvo6eX92nhXp/PzpxOVW8mpvYEP\nedafCptTjCVMnHCFKI6XjZKrehTk4M/nkpJSgsEDXsH/CizxNhbuGAK2Mlu2ITKe\nA0pgSUSAVBUdzZuBOVKYqq6jmVVijQtiK5dk8LmGgwKBgQCYkjujR73n0DvPU5DO\n9gwQ2e9ZPjC0oMkjKoB0d9LvsLl9JN69X4v9QUPekugkqniYn7/ex/Ndtz4YHBXT\nI3oV7BP9CLnoeZZwjEf6Wwv92cS/tUsG5C+8Fh4/BQlFKwgRSpZtba+WZ2L8QpTx\nfLGfH+EctBoqVeLswcI8bE9ByQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "tanpaskripsi@proven-grid-415001.iam.gserviceaccount.com",
+  "client_id": "107272002423970347182",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tanpaskripsi%40proven-grid-415001.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
