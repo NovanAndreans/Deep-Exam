@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\Masters\{
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guest\GuestController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuizSettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -49,6 +50,7 @@ Route::middleware('auth:web')->group(function () {
         Route::resource('rps', RpsController::class);
         Route::get('rps/detail/{id}', [RpsController::class, 'subCpmkView'])->name('rps.subCpmk');
 
+        Route::resource('quiz_setting', QuizSettingController::class);
         Route::resource('subcpmk', SubCpmkController::class);
         Route::resource('meeting', MeetingController::class);
         Route::get('meeting/generate-kisi/{id}', [MeetingController::class, 'generateKisi'])->name('meeting.generate-kisi');

@@ -75,6 +75,7 @@
 @section('content')
 <div class="container mt-4">
     <!-- Quiz Versi Publik -->
+    @if (count($publicQuizzes))
     <h2 class="text-lg font-semibold mb-2">Quiz Versi Publik</h2>
     <div class="swiper-container public-quiz-slider">
         <div class="swiper-wrapper">
@@ -85,16 +86,18 @@
             <div class="swiper-slide">
                 <div class="quiz-card" style="background-color: {{ $colors[$loop->index % count($colors)] }};">
                     <h3 class="text-md font-bold">{{ $quiz->title }}</h3>
-                    <p class="text-sm text-gray-600" title="{{ $quiz->description }}">{{ $quiz->description }}</p>
-                    <a href="{{ route('quiz.show', $quiz->id) }}" class="btn btn-primary">Mulai</a>
+                    <p class="text-sm text-gray-600" title="{{ $quiz->desc }}">{{ $quiz->desc }}</p>
+                    <a href="{{ route('quiz.show', encrypt($quiz->id)) }}" class="btn btn-primary">Mulai</a>
                 </div>
             </div>
             @endforeach
         </div>
         <div class="swiper-pagination"></div>
     </div>
+    @endif
 
     <!-- Quiz dari Guru Anda -->
+    @if (count($teacherQuizzes))
     <h2 class="text-lg font-semibold mt-6 mb-2">Quiz dari Guru Anda</h2>
     <div class="swiper-container teacher-quiz-slider">
         <div class="swiper-wrapper">
@@ -110,6 +113,7 @@
         </div>
         <div class="swiper-pagination"></div>
     </div>
+    @endif
 </div>
 @endsection
 

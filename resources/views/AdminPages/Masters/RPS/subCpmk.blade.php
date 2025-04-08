@@ -77,39 +77,79 @@ break;
 @endsection
 
 @section('content')
-<div class="mb-2 col-sm-12 col-md-12 col-xl-12">
-    <div class="h-100 bg-light rounded p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h6 class="mb-0">Sub Capaian Pembelajaran Mata Kuliah (CPMK)</h6>
+<div class="row">
+    <!-- Quiz Setting -->
+    <div class="mb-2 col-sm-4">
+        <div class="h-100 bg-light rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">Quiz Setting</h6>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
+                    <label class="me-3" for="jumlah_soal">Jumlah Soal</label>
+                    <input type="number" class="form-control w-50" id="jumlah_soal"
+                        value="{{$data->quizSetting->jumlah_soal}}" onchange="updateSetting('jumlah_soal', this.value)">
+                </li>
+                <li class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
+                    <label class="me-3" for="batas_waktu">Batas Waktu (menit)</label>
+                    <input type="number" class="form-control w-50" id="batas_waktu"
+                        value="{{$data->quizSetting->batas_waktu}}" onchange="updateSetting('batas_waktu', this.value)">
+                </li>
+                <li class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
+                    <label class="me-3" for="attempt_quiz">Jumlah Percobaan</label>
+                    <input type="number" class="form-control w-50" id="attempt_quiz"
+                        value="{{$data->quizSetting->attempt_quiz}}"
+                        onchange="updateSetting('attempt_quiz', this.value)">
+                </li>
+                <li class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
+                    <label class="me-3" for="soal_per_sesi">Soal per Sesi</label>
+                    <input type="number" class="form-control w-50" id="soal_per_sesi"
+                        value="{{$data->quizSetting->soal_per_sesi}}"
+                        onchange="updateSetting('soal_per_sesi', this.value)">
+                </li>
+            </ul>
         </div>
-        <div class="d-flex mb-2">
-            <input type="hidden" id="id-subcpmk" name="cpmk_id" value="{{$data->id}}">
-            <input id="new-subcpmk" class="form-control bg-transparent" type="text" placeholder="Enter Sub CPMK">
-            <button type="button" class="btn btn-primary ms-2" onclick="addSubCpmk()">Add</button>
-        </div>
-        <div id="subCpmkList">
-            @foreach($data->subCpmk as $subCpmk)
-            <div class="d-flex align-items-center border-bottom py-2 subcpmk-item" data-id="{{$subCpmk->id}}">
-                <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                        <span class="subcpmk-text">{{$subCpmk->subcpmk}} <div class="badge bg-success subcpmk-text-limit">{{$subCpmk->limit_bloom}}</div></span>
-                        <input class="subcpmk-input form-control d-none" type="text" value="{{$subCpmk->subcpmk}}">
-                        <div>
-                            <button class="btn btn-sm btn-outline-warning edit-btn"><i class="fa fa-edit"></i></button>
-                            <button class="btn btn-sm btn-outline-success save-btn ms-2 d-none"><i
-                                    class="fa fa-check"></i></button>
-                            <button class="btn btn-sm btn-outline-danger delete-btn"
-                                onclick="deleteData(`{{ route('subcpmk.destroy', $subCpmk->id) }}`)">
-                                <i class="fa fa-times"></i>
-                            </button>
+    </div>
+
+    <!-- Sub CPMK -->
+    <div class="mb-2 col-sm-8">
+        <div class="h-100 bg-light rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">Sub Capaian Pembelajaran Mata Kuliah (CPMK)</h6>
+            </div>
+            <div class="d-flex mb-2">
+                <input type="hidden" id="id-subcpmk" name="cpmk_id" value="{{$data->id}}">
+                <input id="new-subcpmk" class="form-control bg-transparent" type="text" placeholder="Enter Sub CPMK">
+                <button type="button" class="btn btn-primary ms-2" onclick="addSubCpmk()">Add</button>
+            </div>
+            <div id="subCpmkList">
+                @foreach($data->subCpmk as $subCpmk)
+                <div class="d-flex align-items-center border-bottom py-2 subcpmk-item" data-id="{{$subCpmk->id}}">
+                    <div class="w-100 ms-3">
+                        <div class="d-flex w-100 align-items-center justify-content-between">
+                            <span class="subcpmk-text">{{$subCpmk->subcpmk}}
+                                <div class="badge bg-success subcpmk-text-limit">{{$subCpmk->limit_bloom}}</div>
+                            </span>
+                            <input class="subcpmk-input form-control d-none" type="text" value="{{$subCpmk->subcpmk}}">
+                            <div>
+                                <button class="btn btn-sm btn-outline-warning edit-btn"><i
+                                        class="fa fa-edit"></i></button>
+                                <button class="btn btn-sm btn-outline-success save-btn ms-2 d-none"><i
+                                        class="fa fa-check"></i></button>
+                                <button class="btn btn-sm btn-outline-danger delete-btn"
+                                    onclick="deleteData(`{{ route('subcpmk.destroy', $subCpmk->id) }}`)">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
         </div>
     </div>
 </div>
+
 
 <!-- Section untuk Meetings -->
 <div class="col-sm-12 col-md-12 col-xl-12">
@@ -599,5 +639,32 @@ break;
     }
 
     $(document).ready(fetchMeetings);
+</script>
+<script>
+    function updateSetting(field, value) {
+        fetch("{{ route('quiz_setting.update', $data->quizSetting->id) }}", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                field: field,
+                value: value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Berhasil diupdate:", field);
+            } else {
+                alert("Gagal memperbarui pengaturan.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Terjadi kesalahan saat mengupdate.");
+        });
+    }
 </script>
 @endpush

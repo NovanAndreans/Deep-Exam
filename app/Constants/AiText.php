@@ -11,9 +11,10 @@ class AiText
         Buatkan kisi-kisi pertanyaan dari materi tersebut sesuai 
         taksonomi bloom kriteria afektif dan kognitif sesuai limit dan termasuk limit subcpmk.
         berikan jawaban dengan format json seperti berikut:
-        " . JsonExample::KisiKisiLesson . ". pada formatnya tertera C1-C6 dan A1-A6, 
+        " . JsonExample::KisiKisiLesson . ". 
+        pada formatnya tertera C1-C6 dan A1-A6, 
         tetapi jika limitnya tidak sebanyak pada format, maka sesuaikan pada limitnya
-        \n langsung JSON jangan string !!!";
+        \n berikan jawaban dalam format JSON Encode";
     }
 
     public static function CheckSubCpmkLimit($subcpmk)

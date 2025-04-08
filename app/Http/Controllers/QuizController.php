@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quiz;
+use App\Models\Rps;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
 {
-    public function result() {
+    protected $rps;
+    public function __construct(Rps $rps)
+    {
+        $this->rps = $rps;
+    }
+
+    public function result()
+    {
         return view('QuizPage.result');
     }
 
@@ -41,7 +49,7 @@ class QuizController extends Controller
                     ["answer" => "5", "isright" => true],
                     ["answer" => "6", "isright" => false],
                 ]
-                ],
+            ],
             [
                 "no" => 4,
                 "question" => "2 - 1 = ....",
@@ -75,29 +83,21 @@ class QuizController extends Controller
     public function index()
     {
         // Data quiz versi publik (statis)
-        $publicQuizzes = [
-            (object) ['id' => 1, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!Uji kemampuan matematikamu!Uji kemampuan matematikamu!Uji kemampuan matematikamu!Uji kemampuan matematikamu!Uji kemampuan matematikamu!Uji kemampuan matematikamu!Uji kemampuan matematikamu!Uji kemampuan matematikamu!'],
-            (object) ['id' => 2, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
-            (object) ['id' => 3, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
-            (object) ['id' => 4, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
-            (object) ['id' => 5, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
-            (object) ['id' => 6, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
-            (object) ['id' => 7, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
-            (object) ['id' => 8, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
-            (object) ['id' => 9, 'title' => 'Quiz Sains', 'description' => 'Jelajahi dunia sains dengan quiz ini!']
-        ];
+        $publicQuizzes = $this->rps->all();
 
         // Data quiz dari guru (statis)
         $teacherQuizzes = [
-            (object) ['id' => 10, 'title' => 'Quiz Fisika', 'description' => 'Tes pemahaman tentang fisika dasar!'],
-            (object) ['id' => 11, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
-            (object) ['id' => 12, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
-            (object) ['id' => 13, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
-            (object) ['id' => 14, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
-            (object) ['id' => 15, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
-            (object) ['id' => 16, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
-            (object) ['id' => 17, 'title' => 'Quiz Biologi', 'description' => 'Seberapa banyak kamu tahu tentang biologi?']
+            // (object) ['id' => 10, 'title' => 'Quiz Fisika', 'description' => 'Tes pemahaman tentang fisika dasar!'],
+            // (object) ['id' => 11, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
+            // (object) ['id' => 12, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
+            // (object) ['id' => 13, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
+            // (object) ['id' => 14, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
+            // (object) ['id' => 15, 'title' => 'Quiz Matematika', 'description' => 'Uji kemampuan matematikamu!'],
+            // (object) ['id' => 16, 'title' => 'Quiz Sejarah', 'description' => 'Seberapa baik kamu mengenal sejarah?'],
+            // (object) ['id' => 17, 'title' => 'Quiz Biologi', 'description' => 'Seberapa banyak kamu tahu tentang biologi?']
         ];
+
+
 
         return view('QuizPage.index', compact('publicQuizzes', 'teacherQuizzes'));
     }
@@ -123,7 +123,11 @@ class QuizController extends Controller
      */
     public function show($id)
     {
-        return view('QuizPage.detail');
+        $id = decrypt($id);
+        $data = $this->rps->with(['creator', 'subCpmk', 'meeting' => function ($query) {
+            $query->with(['kisi']);
+        }])->find($id);
+        return view('QuizPage.detail', compact('data'));
     }
 
     /**

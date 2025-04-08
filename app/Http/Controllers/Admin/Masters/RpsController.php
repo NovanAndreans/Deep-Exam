@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Masters;
 use App\Constants\Routes;
 use App\Http\Controllers\Controller;
 use App\Models\File;
+use App\Models\QuizSetting;
 use App\Models\Rps;
 use App\Models\Type;
 use App\Models\User;
@@ -15,20 +16,21 @@ use Yajra\DataTables\Facades\DataTables;
 
 class RpsController extends Controller
 {
-    protected $rps, $type, $user, $file;
+    protected $rps, $type, $user, $file, $quizSetting;
 
-    public function __construct(Rps $rps, Type $type, User $user, File $file)
+    public function __construct(Rps $rps, Type $type, User $user, File $file, QuizSetting $quizSetting)
     {
         $this->rps = $rps;
         $this->user = $user;
         $this->type = $type;
         $this->file = $file;
+        $this->quizSetting = $quizSetting;
     }
 
     public function subCpmkView($id)
     {
         $id = decrypt($id);
-        $data = $this->rps->with(['subCpmk', 'meeting' => function ($query) {
+        $data = $this->rps->with(['subCpmk', 'quizSetting', 'meeting' => function ($query) {
             $query->with(['kisi']);
         }])->find($id);
         $features = $this->setFeatureSession(Routes::routeMasterRps);
@@ -98,6 +100,10 @@ class RpsController extends Controller
             ->toArray();
 
         $data = $this->rps->create($create);
+
+        $this->quizSetting->create([
+            'rps_id'=>$data->id
+        ]);
 
         return $this->success('Success Create New RPS', $data);
     }

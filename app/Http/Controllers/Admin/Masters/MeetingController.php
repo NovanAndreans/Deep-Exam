@@ -11,6 +11,7 @@ use App\Models\Rps;
 use App\Models\Type;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class MeetingController extends Controller
@@ -36,26 +37,45 @@ class MeetingController extends Controller
         $subCpmk = "";
 
         foreach ($data->subCpmk as $key => $value) {
-            $subCpmk .= $value->subcpmk . " dengan limit KKO Taksonomi Bloom ". $value->limit_bloom . " , ";
+            $subCpmk .= $value->subcpmk . " dengan limit KKO Taksonomi Bloom " . $value->limit_bloom . " , ";
         }
 
         // Ambil respons AI
         $text = $this->generateAI(AiText::GenerateKisi($data->title, $data->desc, $subCpmk));
 
-        // Bersihkan output dari blok kode yang tidak diperlukan
-        $text = preg_replace('/^```json|```$/', '', trim($text));
+        Log::info('AI Response: ' . $text);
 
-        // Decode JSON
+        $text = preg_replace('/```(?:json)?|```/i', '', $text);
+        $text = trim($text);
+
         $json = json_decode($text);
-        foreach ($json as $key => $value) {
-            foreach ($value->isi as $ky => $val) {
-                $this->kisi->create([
-                    "taksonomi_bloom" => $value->taksonomi_bloom,
-                    "type" => $val->type,
-                    "kisi_kisi" => $val->question,
-                    "meeting_id" => $id,
-                ]);
+
+        if (is_array($json)) {
+            foreach ($json as $key => $value) {
+                $taksonomi = $value->taksonomi_bloom;
+
+                // Gabungkan kedua field jika ada
+                $items = [];
+
+                if (isset($value->isi)) {
+                    $items = array_merge($items, $value->isi);
+                }
+
+                if (isset($value->{'kisi-kisi'})) {
+                    $items = array_merge($items, $value->{'kisi-kisi'});
+                }
+
+                foreach ($items as $val) {
+                    $this->kisi->create([
+                        "taksonomi_bloom" => $taksonomi,
+                        "type" => $val->type,
+                        "kisi_kisi" => $val->question,
+                        "meeting_id" => $id,
+                    ]);
+                }
             }
+        } else {
+            Log::error('Data tidak valid atau bukan array:', ['response' => $text]);
         }
 
         return $this->success('Success Show Meeting', $json);
