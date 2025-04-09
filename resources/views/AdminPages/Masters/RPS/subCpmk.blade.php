@@ -85,31 +85,50 @@ break;
                 <h6 class="mb-0">Quiz Setting</h6>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
-                    <label class="me-3" for="jumlah_soal">Jumlah Soal</label>
-                    <input type="number" class="form-control w-50" id="jumlah_soal"
-                        value="{{$data->quizSetting->jumlah_soal}}" onchange="updateSetting('jumlah_soal', this.value)">
+                <li class="list-group-item bg-transparent border-0">
+                    <div class="row align-items-center">
+                        <label class="col-6" for="jumlah_soal">Jumlah Soal</label>
+                        <div class="col-6">
+                            <input type="number" class="form-control" id="jumlah_soal"
+                                value="{{$data->quizSetting->jumlah_soal}}"
+                                onchange="updateSetting('jumlah_soal', this.value)">
+                        </div>
+                    </div>
                 </li>
-                <li class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
-                    <label class="me-3" for="batas_waktu">Batas Waktu (menit)</label>
-                    <input type="number" class="form-control w-50" id="batas_waktu"
-                        value="{{$data->quizSetting->batas_waktu}}" onchange="updateSetting('batas_waktu', this.value)">
+                <li class="list-group-item bg-transparent border-0">
+                    <div class="row align-items-center">
+                        <label class="col-6" for="batas_waktu">Batas Waktu (menit)</label>
+                        <div class="col-6">
+                            <input type="number" class="form-control" id="batas_waktu"
+                                value="{{$data->quizSetting->batas_waktu}}"
+                                onchange="updateSetting('batas_waktu', this.value)">
+                        </div>
+                    </div>
                 </li>
-                <li class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
-                    <label class="me-3" for="attempt_quiz">Jumlah Percobaan</label>
-                    <input type="number" class="form-control w-50" id="attempt_quiz"
-                        value="{{$data->quizSetting->attempt_quiz}}"
-                        onchange="updateSetting('attempt_quiz', this.value)">
+                <li class="list-group-item bg-transparent border-0">
+                    <div class="row align-items-center">
+                        <label class="col-6" for="attempt_quiz">Jumlah Percobaan</label>
+                        <div class="col-6">
+                            <input type="number" class="form-control" id="attempt_quiz"
+                                value="{{$data->quizSetting->attempt_quiz}}"
+                                onchange="updateSetting('attempt_quiz', this.value)">
+                        </div>
+                    </div>
                 </li>
-                <li class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
-                    <label class="me-3" for="soal_per_sesi">Soal per Sesi</label>
-                    <input type="number" class="form-control w-50" id="soal_per_sesi"
-                        value="{{$data->quizSetting->soal_per_sesi}}"
-                        onchange="updateSetting('soal_per_sesi', this.value)">
+                <li class="list-group-item bg-transparent border-0">
+                    <div class="row align-items-center">
+                        <label class="col-6" for="soal_per_sesi">Soal per Sesi</label>
+                        <div class="col-6">
+                            <input type="number" class="form-control" id="soal_per_sesi"
+                                value="{{$data->quizSetting->soal_per_sesi}}"
+                                onchange="updateSetting('soal_per_sesi', this.value)">
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
     </div>
+
 
     <!-- Sub CPMK -->
     <div class="mb-2 col-sm-8">
