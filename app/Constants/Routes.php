@@ -24,6 +24,7 @@ class Routes
     const routeQuizDt = 'quiz.dt';
     const routeQuizProgress = 'quiz.progress';
     const routeQuizResult = 'quiz.results';
+    const routeQuizGenerate = 'quizes.generate';
 
     const routeMasterUsers = 'users.index';
     const routeMasterRps = 'rps.index';

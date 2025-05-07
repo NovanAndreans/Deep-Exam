@@ -29,4 +29,10 @@ class AiText
         Sub CPMK ini " . $subcpmk . "
          \n berikan jawaban dalam format integer 1 digit";
     }
+
+    public static function GenerateQuestion($subCpmkName, $bloomLevel, $soal) {
+        return "Buatkan \"$soal\" soal pilihan ganda tentang \"$subCpmkName\" dengan level taksonomi Bloom $bloomLevel. 
+        Setiap soal harus memiliki satu jawaban benar dan tiga opsi salah. Format jawaban JSON dengan struktur berikut:
+        ".JsonExample::questionFormat;
+    }
 }

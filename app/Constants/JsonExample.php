@@ -66,4 +66,18 @@ class JsonExample
     }
   ]
 JSON;
+
+  const questionFormat = <<<JSON
+[
+  {
+    "question": "Soal Disini",
+    "answers": [
+      { "answer": "Jawaban A", "isright": false },
+      { "answer": "Jawaban B", "isright": true },
+      { "answer": "Jawaban C", "isright": false },
+      { "answer": "Jawaban D", "isright": false }
+    ]
+  }
+]
+JSON;
 }

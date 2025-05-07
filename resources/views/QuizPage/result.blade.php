@@ -20,11 +20,12 @@
 
     .score-box {
         background: #ffb703;
-        padding: 15px;
-        font-size: 24px;
+        padding: 20px;
+        font-size: 28px;
         font-weight: bold;
-        border-radius: 10px;
-        margin-bottom: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        color: #333;
     }
 
     .answer-list {
@@ -33,23 +34,42 @@
     }
 
     .answer-item {
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 5px;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border-left: 6px solid;
+        background-color: #f9f9f9;
     }
 
     .correct {
-        background: #2a9d8f;
-        color: white;
+        border-color: #2a9d8f;
+        background: #e0f7f4;
+        color: #1e5c54;
     }
 
     .wrong {
-        background: #e63946;
-        color: white;
+        border-color: #e63946;
+        background: #fdecea;
+        color: #831c1c;
     }
 
     .footer {
-        margin-top: 20px;
+        margin-top: 30px;
+    }
+
+    .question-text {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    @media (max-width: 600px) {
+        .score-box {
+            font-size: 22px;
+        }
+
+        .answer-item {
+            font-size: 14px;
+        }
     }
 </style>
 @endpush
@@ -58,13 +78,22 @@
 <div class="result-container">
     <h2>Hasil Quiz</h2>
     <div class="score-box">
-        Skor Anda: <span id="score">0</span> / <span id="total"></span>
+        Skor Anda: <span id="score">0</span> / <span id="total">0</span> (<span id="percent">0</span>%)
     </div>
 
-    <h4>Jawaban Anda</h4>
-    <div class="answer-list" id="answer-list"></div>
+    <h4>Detail Quiz</h4>
+    <ul class="list-group text-start">
+        <li class="list-group-item">Durasi: <strong id="duration">-</strong></li>
+        <li class="list-group-item">Jumlah Sesi: <strong id="sessions">-</strong></li>
+        <li class="list-group-item">Sub-CPMK Terakhir: <strong id="subcpmk">-</strong></li>
+    </ul>
 
-    <div class="footer">
+    <h4>Jawaban Anda</h4>
+    <div id="answer-list-container" class="answer-list">
+        <!-- Jawaban akan ditambahkan di sini -->
+    </div>
+
+    <div class="footer mt-4">
         <a href="/" class="btn btn-primary">Kembali ke Beranda</a>
     </div>
 </div>
@@ -73,37 +102,81 @@
 @push('script')
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Mencegah pengguna menekan tombol back
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
             history.go(1);
         };
 
-        // Ambil data dari localStorage
-        let quizData = JSON.parse(localStorage.getItem("quizResult"));
+        const quizData = JSON.parse(localStorage.getItem("quizResult"));
 
         if (!quizData) {
-            alert("Tidak ada data quiz! Kembali ke halaman utama.");
+            alert("Data quiz tidak ditemukan!");
             window.location.href = "/";
             return;
         }
 
-        document.getElementById("score").innerText = quizData.score;
-        document.getElementById("total").innerText = quizData.total;
+        const correctAnswers = quizData.correctAnswers || [];
+        const wrongAnswers = quizData.wrongAnswers || [];
+        const questionLogs = quizData.questionsLog || [];
 
-        let answerList = document.getElementById("answer-list");
-        quizData.answers.forEach((answer, index) => {
-            let div = document.createElement("div");
-            div.classList.add("answer-item");
-            div.classList.add(answer.isCorrect ? "correct" : "wrong");
-            div.innerHTML = `<b>${index + 1}. ${answer.question}</b><br>
-                             Jawaban Anda: ${answer.selectedAnswer} <br>
-                             Jawaban Benar: ${answer.correctAnswer}`;
-            answerList.appendChild(div);
+        const correct = correctAnswers.length;
+        const incorrect = wrongAnswers.length;
+        const total = correct + incorrect;
+        const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+        document.getElementById("score").innerText = correct;
+        document.getElementById("total").innerText = total;
+        document.getElementById("percent").innerText = percent;
+
+        // Konversi durasi detik -> menit & detik
+        const totalSeconds = quizData.totalDuration || 0;
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        document.getElementById("duration").innerText = `${minutes} menit ${seconds} detik`;
+
+        document.getElementById("sessions").innerText = quizData.totalSessions || "-";
+        document.getElementById("subcpmk").innerText = quizData.currentBloomLevel || "-";
+
+        // Helper untuk ambil jawaban user
+        const getSelectedAnswer = (answers) => {
+            const selected = answers.find(a => a.isright);
+            return selected ? selected.answer : "Tidak dijawab";
+        };
+
+        const answerListContainer = document.getElementById("answer-list-container");
+
+        questionLogs.forEach(log => {
+            const userAnswer = getSelectedAnswer(log.answers);
+            const correctAnswerObj = correctAnswers.find(item => item.question === log.question);
+            const wrongAnswerObj = wrongAnswers.find(item => item.question === log.question);
+
+            let status = "unknown";
+            if (correctAnswerObj && correctAnswerObj.answer === userAnswer) {
+                status = "correct";
+            } else if (wrongAnswerObj && wrongAnswerObj.answer === userAnswer) {
+                status = "wrong";
+            }
+
+            const el = document.createElement("div");
+            el.classList.add("answer-item", status);
+            el.innerHTML = `
+                <div class="question-text"><strong>${log.question}</strong></div>
+                <div>Jawaban Anda: <strong>${userAnswer}</strong></div>
+                <div>Status: <span style="color:${status === "correct" ? "green" : "red"}">${status === "correct" ? "Benar" : "Salah"}</span></div>
+            `;
+
+            // Tambahkan jawaban yang benar jika salah
+            if (status === "wrong" && correctAnswerObj) {
+                el.innerHTML += `<div>Jawaban yang benar: <strong>${correctAnswerObj.answer}</strong></div>`;
+            }
+
+            answerListContainer.appendChild(el);
         });
 
-        // Hapus data setelah ditampilkan
+        // Hapus semua data di localStorage setelah menampilkan hasil
         localStorage.removeItem("quizResult");
+        localStorage.removeItem("quizStartTime");
+        localStorage.removeItem("quizProgress");
     });
 </script>
 @endpush

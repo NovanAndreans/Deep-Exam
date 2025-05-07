@@ -43,6 +43,7 @@ Route::middleware('auth:web')->group(function () {
     Route::resource('quiz', QuizController::class);
     Route::get('quiz/{id}/progress', [QuizController::class, 'progress'])->name(Routes::routeQuizProgress);
     Route::get('quiz/progress/result', [QuizController::class, 'result'])->name(Routes::routeQuizResult);
+    Route::get('quizes/generate-questions', [QuizController::class, 'generateQuestion'])->name(Routes::routeQuizGenerate);
 
     Route::group(['prefix' => 'masters'], function () {
         Route::resource('users', UserController::class);

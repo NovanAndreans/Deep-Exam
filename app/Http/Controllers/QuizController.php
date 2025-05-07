@@ -2,17 +2,74 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\AiText;
 use App\Models\Quiz;
+use App\Models\QuizSetting;
 use App\Models\Rps;
+use App\Models\SubCpmk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class QuizController extends Controller
 {
-    protected $rps;
-    public function __construct(Rps $rps)
+    protected $rps, $subCpmk, $quizSetting;
+    public function __construct(Rps $rps, SubCpmk $subCpmk, QuizSetting $quizSetting)
     {
         $this->rps = $rps;
+        $this->subCpmk = $subCpmk;
+        $this->quizSetting = $quizSetting;
     }
+
+    public function generateFirstQuestion($subCpmkId, $bloomLevel)
+    {
+        // Dummy data, seolah-olah dari Gemini
+        $questions = [];
+        // for ($i = 1; $i <= 3; $i++) {
+        //     $questions[] = [
+        //         'question' => "First Soal ke-$i dari Sub-CPMK $subCpmkId, level Bloom $bloomLevel",
+        //         'answers' => [
+        //             ['answer' => "Jawaban A", 'isright' => false],
+        //             ['answer' => "Jawaban B", 'isright' => true],
+        //             ['answer' => "Jawaban C", 'isright' => false],
+        //             ['answer' => "Jawaban D", 'isright' => false],
+        //         ]
+        //     ];
+        // }
+        $subCpmkQuestion = $this->quizSetting->where('rps_id', $subCpmkId->cpmk_id)->first()
+            ->soal_per_sesi
+        ;
+        
+        $jsonString  = $this->generateAI(AiText::GenerateQuestion($subCpmkId, $bloomLevel, $subCpmkQuestion));
+
+        $jsonString = preg_replace('/```(?:json)?|```/i', '', $jsonString);
+        $jsonString = trim($jsonString);
+
+        $questions = json_decode($jsonString);
+
+        return $questions;
+    }
+
+    public function generateQuestion(Request $request)
+    {
+        $subCpmkId = $request->query('subcpmk');
+        $bloomLevel = $request->query('limit_bloom');
+        // Dummy data, seolah-olah dari Gemini
+
+        $rpsId = $this->subCpmk->find($subCpmkId)->cpmk_id;
+        $subCpmkQuestion = $this->quizSetting->where('rps_id', $rpsId)->first()->soal_per_sesi;
+        $subCpmkId = $this->subCpmk->find($subCpmkId)->subcpmk;
+
+        $jsonString  = $this->generateAI(AiText::GenerateQuestion($subCpmkId, $bloomLevel, $subCpmkQuestion));
+
+        $jsonString = preg_replace('/```(?:json)?|```/i', '', $jsonString);
+        $jsonString = trim($jsonString);
+
+        $questions = json_decode($jsonString);
+        Log::info($questions);
+
+        return response()->json($questions);
+    }
+
 
     public function result()
     {
@@ -21,60 +78,19 @@ class QuizController extends Controller
 
     public function progress($id)
     {
-        $questions = [
-            [
-                "no" => 1,
-                "question" => "1 - 1 = ....",
-                "answers" => [
-                    ["answer" => "0", "isright" => true],
-                    ["answer" => "1", "isright" => false],
-                    ["answer" => "2", "isright" => false],
-                ]
-            ],
-            [
-                "no" => 2,
-                "question" => "3 × 2 = ....",
-                "answers" => [
-                    ["answer" => "5", "isright" => false],
-                    ["answer" => "6", "isright" => true],
-                ]
-            ],
-            [
-                "no" => 3,
-                "question" => "10 ÷ 2 = ....",
-                "answers" => [
-                    ["answer" => "2", "isright" => false],
-                    ["answer" => "3", "isright" => false],
-                    ["answer" => "4", "isright" => false],
-                    ["answer" => "5", "isright" => true],
-                    ["answer" => "6", "isright" => false],
-                ]
-            ],
-            [
-                "no" => 4,
-                "question" => "2 - 1 = ....",
-                "answers" => [
-                    ["answer" => "0", "isright" => false],
-                    ["answer" => "1", "isright" => true],
-                    ["answer" => "2", "isright" => false],
-                    ["answer" => "3", "isright" => false],
-                ]
-            ],
-            [
-                "no" => 5,
-                "question" => "2 - 1 = ....",
-                "answers" => [
-                    ["answer" => "0", "isright" => false],
-                    ["answer" => "1", "isright" => true],
-                    ["answer" => "2", "isright" => false],
-                    ["answer" => "3", "isright" => false],
-                    ["answer" => "4", "isright" => false],
-                    ["answer" => "5", "isright" => false],
-                ]
-            ]
-        ];
+        $id = decrypt($id);
+        $subCpmks = $this->subCpmk->where('cpmk_id', $id)->orderBy('limit_bloom', 'asc')->get();
 
-        return view('QuizPage.quiz', compact('questions'));
+        $firstCpmks = collect($subCpmks)->first();
+
+        $firstLimitBloom = optional($subCpmks->first())->limit_bloom ?? 1;
+
+        $questions = $this->generateFirstQuestion($firstCpmks, $firstLimitBloom);
+
+        $setting = $this->quizSetting->where('rps_id', $id)->first();
+
+        $id = encrypt($id);
+        return view('QuizPage.quiz', compact('questions', 'subCpmks', 'id', 'setting'));
     }
 
     /**
@@ -124,9 +140,10 @@ class QuizController extends Controller
     public function show($id)
     {
         $id = decrypt($id);
-        $data = $this->rps->with(['creator', 'subCpmk', 'meeting' => function ($query) {
+        $data = $this->rps->with(['creator', 'subCpmk', 'quizSetting', 'meeting' => function ($query) {
             $query->with(['kisi']);
         }])->find($id);
+
         return view('QuizPage.detail', compact('data'));
     }
 

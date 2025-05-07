@@ -24,7 +24,8 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h3>Quiz {{$data->title}}</h3>
-        <a href="{{ route(\App\Constants\Routes::routeQuizProgress, ['id' => 1]) }}" class="btn btn-success">Attempt
+        <a href="{{ route(\App\Constants\Routes::routeQuizProgress, encrypt($data->id))}}"
+            class="btn btn-success">Attempt
             Quiz</a>
     </div>
     <div class="card-body">
@@ -38,12 +39,12 @@
                 <tr>
                     <td><strong>Jumlah Soal</strong></td>
                     <td>:</td>
-                    <td>10</td>
+                    <td>{{$data->quizSetting->jumlah_soal}}</td>
                 </tr>
                 <tr>
                     <td><strong>Batas Waktu</strong></td>
                     <td>:</td>
-                    <td>30 menit</td>
+                    <td>{{$data->quizSetting->batas_waktu}} menit</td>
                 </tr>
                 <tr>
                     <td><strong>Status</strong></td>
@@ -58,7 +59,7 @@
                 <tr>
                     <td><strong>Attempt Quiz</strong></td>
                     <td>:</td>
-                    <td>3 kali</td>
+                    <td>{{$data->quizSetting->attempt_quiz}} kali</td>
                 </tr>
                 <tr>
                     <td><strong>CPMK</strong></td>
