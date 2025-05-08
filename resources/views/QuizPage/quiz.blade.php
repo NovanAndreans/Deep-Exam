@@ -236,10 +236,36 @@
     function evaluateSession(score, totalQuestions) {
         const subCpmks = allSubCpmks;
         const currentCpmk = subCpmks.find(s => s.id === progress.currentSubCpmkId);
+        progress.currentBloomLevel = currentCpmk['limit_bloom'];
+        
         const currentIndex = subCpmks.findIndex(s => s.id === progress.currentSubCpmkId);
         const passed = score === totalQuestions;
+        const accuracy = score / totalQuestions; // Calculate accuracy as a percentage
 
-        // If all answers are correct, mark SubCPMK as passed
+        // Jika jawaban salah pada level 5, tetap di SubCPMK yang sama tapi turunkan level kognitif
+        if (accuracy === 0 && progress.currentBloomLevel != 1) {
+            progress.currentBloomLevel = Math.max(progress.currentBloomLevel - 1, 1);
+        }
+
+        // Jika lebih dari 50% jawaban salah, turunkan level kognitif
+        if (accuracy <= 0.5) {
+            if (progress.currentBloomLevel > 1) {
+                progress.currentBloomLevel--;
+            }
+        }
+        // Jika benar 100%, tingkat kesulitan naik, atau jika sudah pada limit, naikkan SubCPMK
+        else if (accuracy == 1) {
+            if (progress.currentBloomLevel < currentCpmk.limit_bloom) {
+                progress.currentBloomLevel++;
+            } else if (currentIndex + 1 < subCpmks.length) {
+                progress.currentSubCpmkId = subCpmks[currentIndex + 1].id;
+                progress.currentBloomLevel = 1;
+            }
+        }else{
+            progress.currentBloomLevel = progress.currentBloomLevel;
+        }
+
+        // Update history untuk evaluasi
         progress.history.push({
             subCpmkId: progress.currentSubCpmkId,
             session: progress.sessionNumber,
@@ -248,28 +274,16 @@
             passed: passed
         });
 
-        // Increase Bloom Level or move to next SubCPMK if passed
-        if (passed) {
-            if (progress.currentBloomLevel < currentCpmk.limit_bloom) {
-                progress.currentBloomLevel++;
-            } else if (currentIndex + 1 < subCpmks.length) {
-                progress.currentSubCpmkId = subCpmks[currentIndex + 1].id;
-                progress.currentBloomLevel = 1;
-            }
-        }
-
-        // Update session number and answered count
+        // Update sesi
         progress.sessionNumber++;
         progress.answeredCount += totalQuestions;
 
         localStorage.setItem("quizProgress", JSON.stringify(progress));
 
-        // Update SubCPMK information
-        updateSubCpmkInfo();
 
-        // Check if all questions are answered
+        // Cek apakah semua soal sudah dijawab
         if (progress.answeredCount >= quizLimit) {
-            // Store the results in local storage
+            // Menyimpan hasil quiz di localStorage
             const quizResult = {
                 totalDuration: progress.totalDuration,
                 totalCorrect: correctAnswers.length,
@@ -288,9 +302,12 @@
             hapusSesi();
             window.location.href = "{{ route(\App\Constants\Routes::routeQuizResult) }}";
         } else {
-            // Generate new questions for the next Bloom Level or SubCPMK
+            // Menyusun soal baru untuk Bloom Level atau SubCPMK yang baru
             generateNewQuestions(progress.currentSubCpmkId, progress.currentBloomLevel);
         }
+        
+        // Update SubCPMK info di UI
+        updateSubCpmkInfo();
     }
 
     function updateSubCpmkInfo() {
