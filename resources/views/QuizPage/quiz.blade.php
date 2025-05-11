@@ -129,24 +129,33 @@
 
     /* Tooltip Styles for Hint */
     .hint {
+        max-width: 50%;
         position: absolute;
-        top: 100%; /* Positioned below the Hint button */
+        top: 100%;
+        /* Positioned below the Hint button */
         left: 50%;
         transform: translateX(-50%);
-        background-color: #17a2b8; /* btn-info color */
+        background-color: #17a2b8;
+        /* btn-info color */
         color: white;
         padding: 5px 10px;
         font-size: 14px;
         font-style: italic;
         border-radius: 5px;
-        white-space: nowrap;
+        white-space: normal;
+        /* Allow text to wrap */
         display: none;
         z-index: 10;
-        margin-top: 5px; /* Space between Hint button and tooltip */
+        margin-top: 5px;
+        /* Space between Hint button and tooltip */
+        overflow-wrap: break-word;
+        /* Ensures long words break and wrap */
     }
 
-    .hint-button:hover + .hint {
-        display: block; /* Show hint when hovering over the Hint button */
+
+    .hint-button:hover+.hint {
+        display: block;
+        /* Show hint when hovering over the Hint button */
     }
 
     /* Loading Spinner Style */
@@ -165,8 +174,13 @@
     }
 
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
     /* Media Query for Responsiveness */
@@ -194,7 +208,6 @@
             margin-bottom: 15px;
         }
     }
-
 </style>
 @endpush
 
@@ -269,13 +282,18 @@
 <script>
     const allSubCpmks = @json($subCpmks);
     const quizLimit = {{ $setting['jumlah_soal'] }};
+    const quizLimitpersession = {{ $setting['soal_per_sesi'] }};
     let currentQuestion = 1;
     let selectedAnswers = {};
     let correctAnswers = [];
     let wrongAnswers = [];
     let timer;
     let timeLeft = {{ $setting['batas_waktu'] }} * 60;
+    
+    let correctAnswersSesion = 0;
 
+    console.log("Current Subcpmk = " + allSubCpmks[0].id);
+    
     let progress = JSON.parse(localStorage.getItem("quizProgress")) || {
         sessionNumber: 1,
         currentSubCpmkId: allSubCpmks[0].id,
@@ -298,9 +316,11 @@
         button.classList.add("selected");
 
         const isCorrect = isRight === "true" || isRight === true;
+
         selectedAnswers[questionIndex] = { answer: answerText, isCorrect: isCorrect };
 
         if (isCorrect) {
+            correctAnswersSesion++;
             correctAnswers.push({ question: questionText, answer: answerText });
         } else {
             wrongAnswers.push({ question: questionText, answer: answerText });
@@ -351,48 +371,52 @@
     }
 
     function submitQuiz() {
-        // Show loading spinner
+        // Tampilkan loading spinner
         document.getElementById('loading-spinner').style.display = 'block';
         document.getElementById('question-container').classList.add("hidden");
         clearInterval(timer);
+
         let total = document.querySelectorAll(".question").length;
-        let correct = correctAnswers.length;
+        let correct = correctAnswersSesion;
 
         const startTime = parseInt(localStorage.getItem("quizStartTime"));
         const endTime = Date.now();
         const totalDuration = Math.floor((endTime - startTime) / 1000);
         progress.totalDuration = totalDuration;
 
-        evaluateSession(correct, total);
+        // Evaluasi SubCPMK
+        evaluateSession(correct, quizLimitpersession);
+
+        // Cek apakah semua SubCPMK sudah selesai
+        const allSubCpmksCompleted = allSubCpmks.every(sub => {
+            const completed = progress.history.some(item => item.subCpmkId === sub.id && item.passed);
+            console.log(`SubCPMK ID ${sub.id}: ${completed ? 'Selesai' : 'Belum Selesai'}`);
+            return completed;
+        });
+
+        // Log status akhir
+        console.log(`Semua SubCPMK selesai: ${allSubCpmksCompleted}`);
+
+        // Jika semua SubCPMK selesai, otomatis selesai ujian
+        if (allSubCpmksCompleted) {
+            console.log('Semua SubCPMK selesai, mengakhiri ujian...');
+            finishQuizAutomatically();
+        } else {
+            console.log('Masih ada SubCPMK yang belum selesai, melanjutkan...');
+        }
     }
+
 
     function evaluateSession(score, totalQuestions) {
         const subCpmks = allSubCpmks;
         const currentCpmk = subCpmks.find(s => s.id === progress.currentSubCpmkId);
         progress.currentBloomLevel = currentCpmk['limit_bloom'];
-        
+
         const currentIndex = subCpmks.findIndex(s => s.id === progress.currentSubCpmkId);
-        const passed = score === totalQuestions;
+        const passed = score == totalQuestions;
         const accuracy = score / totalQuestions;
 
-        if (accuracy === 0 && progress.currentBloomLevel != 1) {
-            progress.currentBloomLevel = Math.max(progress.currentBloomLevel - 1, 1);
-        }
-
-        if (accuracy <= 0.5) {
-            if (progress.currentBloomLevel > 1) {
-                progress.currentBloomLevel--;
-            }
-        }
-        else if (accuracy == 1) {
-            if (progress.currentBloomLevel < currentCpmk.limit_bloom) {
-                progress.currentBloomLevel++;
-            } else if (currentIndex + 1 < subCpmks.length) {
-                progress.currentSubCpmkId = subCpmks[currentIndex + 1].id;
-                progress.currentBloomLevel = 1;
-            }
-        }
-
+        // Simpan hasil evaluasi sesi
         progress.history.push({
             subCpmkId: progress.currentSubCpmkId,
             session: progress.sessionNumber,
@@ -401,32 +425,58 @@
             passed: passed
         });
 
+        // Logika untuk mengatur Bloom Level
+        if (accuracy === 0 && progress.currentBloomLevel != 1) {
+            progress.currentBloomLevel = Math.max(progress.currentBloomLevel - 1, 1);
+        }
+
+        if (accuracy <= 0.5) {
+            if (progress.currentBloomLevel > 1) {
+                progress.currentBloomLevel--;
+            }
+        } else if (accuracy == 1) {
+            if (progress.currentBloomLevel < currentCpmk.limit_bloom) {
+                progress.currentBloomLevel++;
+            } else if (currentIndex + 1 < subCpmks.length) {
+                progress.currentSubCpmkId = subCpmks[currentIndex + 1].id;
+                progress.currentBloomLevel = 1;
+            }
+        }
+
+        
+
         progress.sessionNumber++;
         progress.answeredCount += totalQuestions;
 
         localStorage.setItem("quizProgress", JSON.stringify(progress));
-        
+
+        // Update informasi SubCPMK yang aktif
         updateSubCpmkInfo();
 
-        if (progress.answeredCount >= quizLimit) {
-            const quizResult = {
-                totalDuration: progress.totalDuration,
-                totalCorrect: correctAnswers.length,
-                totalIncorrect: wrongAnswers.length,
-                correctAnswers: correctAnswers,
-                wrongAnswers: wrongAnswers,
-                history: progress.history,
-                questionsLog: progress.questionsLog,
-                lastSubCpmk: progress.currentSubCpmkId,
-                currentBloomLevel: progress.currentBloomLevel,
-                totalSessions: progress.sessionNumber - 1
-            };
+        // Log hasil evaluasi session
+        console.log(`Evaluasi sesi: SubCPMK ID ${progress.currentSubCpmkId}`);
+        console.log(`Skor: ${score}, Total: ${totalQuestions}, Akurasi: ${accuracy.toFixed(2)}`);
 
-            localStorage.setItem("quizResult", JSON.stringify(quizResult));
-            alert(`Quiz selesai! Waktu total: ${Math.floor(progress.totalDuration / 60)} menit ${progress.totalDuration % 60} detik`);
-            hapusSesi();
-            window.location.href = "{{ route(\App\Constants\Routes::routeQuizResult) }}";
+        // Cek apakah semua SubCPMK sudah selesai
+        const allSubCpmksCompleted = allSubCpmks.every(sub => {
+            // Pastikan SubCPMK hanya dianggap selesai jika salah satu sesi untuk sub tersebut sudah selesai dengan 'passed'
+            const completed = progress.history
+                .filter(item => item.subCpmkId === sub.id)  // Filter untuk mendapatkan semua sesi untuk SubCPMK ini
+                .some(item => item.passed);  // Cek jika ada sesi yang memiliki status 'passed'
+            
+            console.log(`SubCPMK ID ${sub.id}: ${completed ? 'Selesai' : 'Belum Selesai'}`);
+            return completed;
+        });
+
+        // Log status akhir
+        console.log(`Semua SubCPMK selesai: ${allSubCpmksCompleted}`);
+
+        // Jika semua SubCPMK selesai, otomatis selesaikan ujian
+        if (allSubCpmksCompleted) {
+            console.log('Semua SubCPMK selesai, mengakhiri ujian...');
+            finishQuizAutomatically();
         } else {
+            console.log('Masih ada SubCPMK yang belum selesai, melanjutkan...');
             generateNewQuestions(progress.currentSubCpmkId, progress.currentBloomLevel);
         }
     }
@@ -453,6 +503,7 @@
     }
 
     function generateNewQuestions(subCpmkId, bloomLevel) {
+        correctAnswersSesion=0;
         $.ajax({
             url: `/quizes/generate-questions`,
             method: 'GET',
@@ -552,7 +603,6 @@
                 clearInterval(timer);
                 alert("Waktu habis!");
                 window.location.href = "{{ route(\App\Constants\Routes::routeQuizResult) }}";
-                hapusSesi();
                 return;
             }
             timeLeft--;
@@ -561,12 +611,6 @@
             document.getElementById("quiz-timer").textContent =
                 `Waktu: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }, 1000);
-    }
-
-    function hapusSesi() {
-        // Uncomment jika ingin reset saat selesai
-        // localStorage.removeItem("quizProgress");
-        // localStorage.removeItem("quizStartTime");
     }
 
     function startQuiz() {
@@ -581,6 +625,39 @@
         updateSubCpmkInfo();
         startTimer();
     }
+
+    function finishQuizAutomatically() {
+        // Show loading spinner
+        document.getElementById('loading-spinner').style.display = 'block';
+        document.getElementById('question-container').classList.add("hidden");
+        clearInterval(timer);
+
+        let total = document.querySelectorAll(".question").length;
+        let correct = correctAnswersSesion;
+
+        const startTime = parseInt(localStorage.getItem("quizStartTime"));
+        const endTime = Date.now();
+        const totalDuration = Math.floor((endTime - startTime) / 1000);
+        progress.totalDuration = totalDuration;
+
+        const quizResult = {
+            totalDuration: progress.totalDuration,
+            totalCorrect: correctAnswers.length,
+            totalIncorrect: wrongAnswers.length,
+            correctAnswers: correctAnswers,
+            wrongAnswers: wrongAnswers,
+            history: progress.history,
+            questionsLog: progress.questionsLog,
+            lastSubCpmk: progress.currentSubCpmkId,
+            currentBloomLevel: progress.currentBloomLevel,
+            totalSessions: progress.sessionNumber - 1
+        };
+
+        localStorage.setItem("quizResult", JSON.stringify(quizResult));
+        alert(`Quiz selesai! Waktu total: ${Math.floor(progress.totalDuration / 60)} menit ${progress.totalDuration % 60} detik`);
+        window.location.href = "{{ route(\App\Constants\Routes::routeQuizResult) }}";
+    }
+
 
     window.onload = () => {
         $('#startQuizModal').modal({ backdrop: 'static', keyboard: false });
