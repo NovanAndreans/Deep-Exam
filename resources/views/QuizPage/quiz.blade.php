@@ -37,6 +37,7 @@
         border-radius: 10px;
         margin-bottom: 10px;
         text-align: center;
+        position: relative;
     }
 
     .option-btn {
@@ -126,6 +127,28 @@
         border-radius: 5px;
     }
 
+    /* Tooltip Styles for Hint */
+    .hint {
+        position: absolute;
+        top: 100%; /* Positioned below the Hint button */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #17a2b8; /* btn-info color */
+        color: white;
+        padding: 5px 10px;
+        font-size: 14px;
+        font-style: italic;
+        border-radius: 5px;
+        white-space: nowrap;
+        display: none;
+        z-index: 10;
+        margin-top: 5px; /* Space between Hint button and tooltip */
+    }
+
+    .hint-button:hover + .hint {
+        display: block; /* Show hint when hovering over the Hint button */
+    }
+
     /* Loading Spinner Style */
     .loading-spinner {
         display: none;
@@ -145,6 +168,33 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
+    /* Media Query for Responsiveness */
+    @media (max-width: 768px) {
+        .quiz-container {
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .left-section,
+        .right-section {
+            flex: none;
+            width: 100%;
+        }
+
+        .hint {
+            left: 0;
+            top: 100%;
+            transform: translateY(10px);
+            width: 100%;
+            text-align: center;
+        }
+
+        .question-box {
+            margin-bottom: 15px;
+        }
+    }
+
 </style>
 @endpush
 
@@ -170,6 +220,10 @@
             <div class="question hidden" id="question-{{ $index + 1 }}">
                 <div class="question-box">
                     <h5>{{ $question->question }}</h5>
+                    <!-- Button Hint -->
+                    <button class="btn btn-info btn-sm hint-button">Hint</button>
+                    <!-- Tooltip for Hint -->
+                    <p class="hint">{{ $question->hint }}</p>
                 </div>
                 @foreach ($question->answers as $answer)
                 <button class="option-btn"
@@ -233,104 +287,6 @@
         wrongAnswers: []
     };
 
-    function evaluateSession(score, totalQuestions) {
-        const subCpmks = allSubCpmks;
-        const currentCpmk = subCpmks.find(s => s.id === progress.currentSubCpmkId);
-        progress.currentBloomLevel = currentCpmk['limit_bloom'];
-        
-        const currentIndex = subCpmks.findIndex(s => s.id === progress.currentSubCpmkId);
-        const passed = score === totalQuestions;
-        const accuracy = score / totalQuestions; // Calculate accuracy as a percentage
-
-        // Jika jawaban salah pada level 5, tetap di SubCPMK yang sama tapi turunkan level kognitif
-        if (accuracy === 0 && progress.currentBloomLevel != 1) {
-            progress.currentBloomLevel = Math.max(progress.currentBloomLevel - 1, 1);
-        }
-
-        // Jika lebih dari 50% jawaban salah, turunkan level kognitif
-        if (accuracy <= 0.5) {
-            if (progress.currentBloomLevel > 1) {
-                progress.currentBloomLevel--;
-            }
-        }
-        // Jika benar 100%, tingkat kesulitan naik, atau jika sudah pada limit, naikkan SubCPMK
-        else if (accuracy == 1) {
-            if (progress.currentBloomLevel < currentCpmk.limit_bloom) {
-                progress.currentBloomLevel++;
-            } else if (currentIndex + 1 < subCpmks.length) {
-                progress.currentSubCpmkId = subCpmks[currentIndex + 1].id;
-                progress.currentBloomLevel = 1;
-            }
-        }else{
-            progress.currentBloomLevel = progress.currentBloomLevel;
-        }
-
-        // Update history untuk evaluasi
-        progress.history.push({
-            subCpmkId: progress.currentSubCpmkId,
-            session: progress.sessionNumber,
-            score: score,
-            total: totalQuestions,
-            passed: passed
-        });
-
-        // Update sesi
-        progress.sessionNumber++;
-        progress.answeredCount += totalQuestions;
-
-        localStorage.setItem("quizProgress", JSON.stringify(progress));
-
-
-        // Cek apakah semua soal sudah dijawab
-        if (progress.answeredCount >= quizLimit) {
-            // Menyimpan hasil quiz di localStorage
-            const quizResult = {
-                totalDuration: progress.totalDuration,
-                totalCorrect: correctAnswers.length,
-                totalIncorrect: wrongAnswers.length,
-                correctAnswers: correctAnswers,
-                wrongAnswers: wrongAnswers,
-                history: progress.history,
-                questionsLog: progress.questionsLog,
-                lastSubCpmk: progress.currentSubCpmkId,
-                currentBloomLevel: progress.currentBloomLevel,
-                totalSessions: progress.sessionNumber - 1
-            };
-
-            localStorage.setItem("quizResult", JSON.stringify(quizResult));
-            alert(`Quiz selesai! Waktu total: ${Math.floor(progress.totalDuration / 60)} menit ${progress.totalDuration % 60} detik`);
-            hapusSesi();
-            window.location.href = "{{ route(\App\Constants\Routes::routeQuizResult) }}";
-        } else {
-            // Menyusun soal baru untuk Bloom Level atau SubCPMK yang baru
-            generateNewQuestions(progress.currentSubCpmkId, progress.currentBloomLevel);
-        }
-        
-        // Update SubCPMK info di UI
-        updateSubCpmkInfo();
-    }
-
-    function updateSubCpmkInfo() {
-        const sub = allSubCpmks.find(s => s.id === progress.currentSubCpmkId);
-        document.getElementById("current-subcpmk-info").innerHTML =
-            `SubCPMK: <strong>${sub.subcpmk}</strong> (Bloom Level: ${progress.currentBloomLevel})`;
-
-        const completedSubCpmks = allSubCpmks.filter(sub => {
-            const historyItem = progress.history.find(item => item.subCpmkId === sub.id && item.passed);
-            return historyItem && historyItem.passed;  // Filter completed SubCPMKs
-        });
-
-        const subCpmkListElement = document.getElementById("subcpmk-list");
-        subCpmkListElement.innerHTML = ""; // Reset previous list
-
-        completedSubCpmks.forEach(sub => {
-            const bloomLevel = progress.currentBloomLevel || "undefined"; // Fallback for Bloom level
-            const li = document.createElement("li");
-            li.textContent = `SubCPMK ${sub.subcpmk} - Bloom Level: ${bloomLevel}`;
-            subCpmkListElement.appendChild(li);
-        });
-    }
-
     function selectAnswer(button, questionIndex, isRight, questionText, answerText) {
         if (selectedAnswers.hasOwnProperty(questionIndex)) {
             const previouslySelectedBtn = document.querySelector(`#question-${questionIndex} .option-btn.selected`);
@@ -362,7 +318,6 @@
     function nextQuestion() {
         const total = document.querySelectorAll(".question").length;
         if (currentQuestion < total) {
-            // Hide the previous question
             document.getElementById(`question-${currentQuestion}`).classList.add("hidden");
             currentQuestion++;
             document.getElementById(`question-${currentQuestion}`).classList.remove("hidden");
@@ -398,7 +353,7 @@
     function submitQuiz() {
         // Show loading spinner
         document.getElementById('loading-spinner').style.display = 'block';
-        document.getElementById('question-container').classList.add("hidden");  // Hide quiz questions while loading
+        document.getElementById('question-container').classList.add("hidden");
         clearInterval(timer);
         let total = document.querySelectorAll(".question").length;
         let correct = correctAnswers.length;
@@ -409,6 +364,92 @@
         progress.totalDuration = totalDuration;
 
         evaluateSession(correct, total);
+    }
+
+    function evaluateSession(score, totalQuestions) {
+        const subCpmks = allSubCpmks;
+        const currentCpmk = subCpmks.find(s => s.id === progress.currentSubCpmkId);
+        progress.currentBloomLevel = currentCpmk['limit_bloom'];
+        
+        const currentIndex = subCpmks.findIndex(s => s.id === progress.currentSubCpmkId);
+        const passed = score === totalQuestions;
+        const accuracy = score / totalQuestions;
+
+        if (accuracy === 0 && progress.currentBloomLevel != 1) {
+            progress.currentBloomLevel = Math.max(progress.currentBloomLevel - 1, 1);
+        }
+
+        if (accuracy <= 0.5) {
+            if (progress.currentBloomLevel > 1) {
+                progress.currentBloomLevel--;
+            }
+        }
+        else if (accuracy == 1) {
+            if (progress.currentBloomLevel < currentCpmk.limit_bloom) {
+                progress.currentBloomLevel++;
+            } else if (currentIndex + 1 < subCpmks.length) {
+                progress.currentSubCpmkId = subCpmks[currentIndex + 1].id;
+                progress.currentBloomLevel = 1;
+            }
+        }
+
+        progress.history.push({
+            subCpmkId: progress.currentSubCpmkId,
+            session: progress.sessionNumber,
+            score: score,
+            total: totalQuestions,
+            passed: passed
+        });
+
+        progress.sessionNumber++;
+        progress.answeredCount += totalQuestions;
+
+        localStorage.setItem("quizProgress", JSON.stringify(progress));
+        
+        updateSubCpmkInfo();
+
+        if (progress.answeredCount >= quizLimit) {
+            const quizResult = {
+                totalDuration: progress.totalDuration,
+                totalCorrect: correctAnswers.length,
+                totalIncorrect: wrongAnswers.length,
+                correctAnswers: correctAnswers,
+                wrongAnswers: wrongAnswers,
+                history: progress.history,
+                questionsLog: progress.questionsLog,
+                lastSubCpmk: progress.currentSubCpmkId,
+                currentBloomLevel: progress.currentBloomLevel,
+                totalSessions: progress.sessionNumber - 1
+            };
+
+            localStorage.setItem("quizResult", JSON.stringify(quizResult));
+            alert(`Quiz selesai! Waktu total: ${Math.floor(progress.totalDuration / 60)} menit ${progress.totalDuration % 60} detik`);
+            hapusSesi();
+            window.location.href = "{{ route(\App\Constants\Routes::routeQuizResult) }}";
+        } else {
+            generateNewQuestions(progress.currentSubCpmkId, progress.currentBloomLevel);
+        }
+    }
+
+    function updateSubCpmkInfo() {
+        const sub = allSubCpmks.find(s => s.id === progress.currentSubCpmkId);
+        document.getElementById("current-subcpmk-info").innerHTML =
+            `SubCPMK: <strong>${sub.subcpmk}</strong> (Bloom Level: ${progress.currentBloomLevel})`;
+
+        const completedSubCpmks = allSubCpmks.filter(sub => {
+            const historyItem = progress.history.find(item => item.subCpmkId === sub.id && item.passed);
+            return historyItem && historyItem.passed;
+        });
+
+        const subCpmkListElement = document.getElementById("subcpmk-list");
+        subCpmkListElement.innerHTML = "";  // Reset previous list
+
+        completedSubCpmks.forEach(sub => {
+            const bloomLevel = progress.currentBloomLevel || "undefined";  // Fallback for Bloom level
+            const li = document.createElement("li");
+            li.textContent = `SubCPMK ${sub.subcpmk} - Bloom Level: ${bloomLevel}`;
+            subCpmkListElement.appendChild(li);
+        });
     }
 
     function generateNewQuestions(subCpmkId, bloomLevel) {
@@ -423,8 +464,7 @@
             success: function(data) {
                 progress.questionsLog.push(...data);
                 localStorage.setItem("quizProgress", JSON.stringify(progress));
-
-                renderQuestions(data);  // Re-render the questions
+                renderQuestions(data);
             },
             error: function(xhr, status, error) {
                 alert("Gagal memuat soal baru");
@@ -456,6 +496,19 @@
             const h5 = document.createElement("h5");
             h5.textContent = question.question;
             questionBox.appendChild(h5);
+
+            // Button Hint
+            const hintButton = document.createElement("button");
+            hintButton.className = "btn btn-info btn-sm hint-button";
+            hintButton.textContent = "Hint";
+            questionBox.appendChild(hintButton);
+
+            // Tooltip for Hint
+            const hintText = document.createElement("p");
+            hintText.className = "hint";
+            hintText.textContent = question.hint;
+            questionBox.appendChild(hintText);
+
             div.appendChild(questionBox);
 
             question.answers.forEach(answer => {
@@ -486,7 +539,6 @@
         updateSubCpmkInfo();
         startTimer();
 
-        // Hide loading spinner and show questions
         document.getElementById('loading-spinner').style.display = 'none';
         document.getElementById('question-container').classList.remove("hidden");
     }

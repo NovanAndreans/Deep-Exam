@@ -76,7 +76,8 @@ JSON;
       { "answer": "Jawaban B", "isright": true },
       { "answer": "Jawaban C", "isright": false },
       { "answer": "Jawaban D", "isright": false }
-    ]
+    ],
+    "hint": "Hint Disini"
   }
 ]
 JSON;
