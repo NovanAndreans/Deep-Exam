@@ -291,6 +291,9 @@
     let timeLeft = {{ $setting['batas_waktu'] }} * 60;
     
     let correctAnswersSesion = 0;
+    let sessionStartTime;  // Variable to track session start time
+    let userChangeAnswer = 0;
+    let userSkipQuestion = 0;
 
     console.log("Current Subcpmk = " + allSubCpmks[0].id);
     
@@ -302,7 +305,10 @@
         history: [],
         questionsLog: [],
         correctAnswers: [],
-        wrongAnswers: []
+        wrongAnswers: [],
+        timeSpendSessions: [], 
+        userChangeAnswerSessions: [],
+        userSkipQuestionSessions: []
     };
 
     function selectAnswer(button, questionIndex, isRight, questionText, answerText) {
@@ -325,6 +331,13 @@
         } else {
             wrongAnswers.push({ question: questionText, answer: answerText });
         }
+
+        // Track answer changes
+        // if (!progress.userChangeAnswerSessions[progress.sessionNumber - 1]) {
+        //     progress.userChangeAnswerSessions[progress.sessionNumber - 1] = 0;
+        // }
+        
+        userChangeAnswer++;
 
         document.getElementById(`nav-${questionIndex}`).classList.add("answered");
 
@@ -358,6 +371,15 @@
         document.getElementById(`question-${currentQuestion}`).classList.add("hidden");
         currentQuestion = index;
         document.getElementById(`question-${currentQuestion}`).classList.remove("hidden");
+        
+        // Track question skips
+        if (!selectedAnswers[currentQuestion]) {
+            // if (!progress.userSkipQuestionSessions[progress.sessionNumber - 1]) {
+            //     progress.userSkipQuestionSessions[progress.sessionNumber - 1] = 0;
+            // }
+            userSkipQuestion++;
+        }
+        
         updateButtons();
     }
 
@@ -386,6 +408,13 @@
 
         // Evaluasi SubCPMK
         evaluateSession(correct, quizLimitpersession);
+
+        // Record time spent on the session
+        const sessionTimeSpent = Math.floor((endTime - sessionStartTime) / 1000); // Time spent on current session
+        progress.timeSpendSessions.push({
+            session: progress.sessionNumber - 1,
+            time: sessionTimeSpent
+        });
 
         // Cek apakah semua SubCPMK sudah selesai
         const allSubCpmksCompleted = allSubCpmks.every(sub => {
@@ -443,7 +472,19 @@
             }
         }
 
+        if (userChangeAnswer == quizLimitpersession) {
+            userChangeAnswer = 0;
+        }
         
+        progress.userChangeAnswerSessions.push({
+            session: progress.sessionNumber,
+            changeAnswer: userChangeAnswer - quizLimitpersession
+        });
+        
+        progress.userSkipQuestionSessions.push({
+            session: progress.sessionNumber,
+            skipQuestion: userSkipQuestion
+        });
 
         progress.sessionNumber++;
         progress.answeredCount += totalQuestions;
@@ -497,13 +538,15 @@
         completedSubCpmks.forEach(sub => {
             const bloomLevel = progress.currentBloomLevel || "undefined";  // Fallback for Bloom level
             const li = document.createElement("li");
-            li.textContent = `SubCPMK ${sub.subcpmk} - Bloom Level: ${bloomLevel}`;
+            li.textContent = `SubCPMK ${sub.subcpmk}`;
             subCpmkListElement.appendChild(li);
         });
     }
 
     function generateNewQuestions(subCpmkId, bloomLevel) {
-        correctAnswersSesion=0;
+        correctAnswersSesion = 0;
+        userChangeAnswer = 0;
+        userSkipQuestion = 0;
         $.ajax({
             url: `/quizes/generate-questions`,
             method: 'GET',
@@ -596,6 +639,7 @@
 
     function startTimer() {
         clearInterval(timer);
+        sessionStartTime = Date.now(); // Mark the start time of the session
         timeLeft = {{ $setting['batas_waktu'] }} * 60;
 
         timer = setInterval(() => {
