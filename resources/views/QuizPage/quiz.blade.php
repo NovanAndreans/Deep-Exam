@@ -234,7 +234,7 @@
                 <div class="question-box">
                     <h5>{{ $question->question }}</h5>
                     <!-- Button Hint -->
-                    <button class="btn btn-info btn-sm hint-button">Hint</button>
+                    <button class="btn btn-info btn-sm hint-button" onmouseover="showHint()">Hint</button>
                     <!-- Tooltip for Hint -->
                     <p class="hint">{{ $question->hint }}</p>
                 </div>
@@ -294,8 +294,18 @@
     let sessionStartTime;  // Variable to track session start time
     let userChangeAnswer = 0;
     let userSkipQuestion = 0;
+    let userHintClicked = 0;
 
-    console.log("Current Subcpmk = " + allSubCpmks[0].id);
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault(); // Menonaktifkan klik kanan
+    });
+
+    document.onkeydown = function(e) {
+        if (e.keyCode === 123) { // F12
+            e.preventDefault();
+        }
+    }
+
     
     let progress = JSON.parse(localStorage.getItem("quizProgress")) || {
         sessionNumber: 1,
@@ -308,7 +318,8 @@
         wrongAnswers: [],
         timeSpendSessions: [], 
         userChangeAnswerSessions: [],
-        userSkipQuestionSessions: []
+        userSkipQuestionSessions: [],
+        userHintSessions: []
     };
 
     function selectAnswer(button, questionIndex, isRight, questionText, answerText) {
@@ -346,6 +357,10 @@
         } else {
             document.getElementById("submit-btn").classList.remove("hidden");
         }
+    }
+
+    function showHint() { 
+        userHintClicked++;
     }
 
     function nextQuestion() {
@@ -481,6 +496,11 @@
             changeAnswer: userChangeAnswer - quizLimitpersession
         });
         
+        progress.userHintSessions.push({
+            session: progress.sessionNumber,
+            hintShowed: userHintClicked
+        });
+        
         progress.userSkipQuestionSessions.push({
             session: progress.sessionNumber,
             skipQuestion: userSkipQuestion
@@ -547,6 +567,7 @@
         correctAnswersSesion = 0;
         userChangeAnswer = 0;
         userSkipQuestion = 0;
+        userHintClicked = 0;
         $.ajax({
             url: `/quizes/generate-questions`,
             method: 'GET',
@@ -596,6 +617,8 @@
             hintButton.className = "btn btn-info btn-sm hint-button";
             hintButton.textContent = "Hint";
             questionBox.appendChild(hintButton);
+            hintButton.addEventListener('mouseover', showHint);
+
 
             // Tooltip for Hint
             const hintText = document.createElement("p");

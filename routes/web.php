@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\Masters\{
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guest\GuestController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuizProgressController;
 use App\Http\Controllers\QuizSettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,7 @@ Route::middleware('auth:web')->group(function () {
 
     Route::resource('quiz', QuizController::class);
     Route::get('quiz/{id}/progress', [QuizController::class, 'progress'])->name(Routes::routeQuizProgress);
+    Route::post('quiz/progress/submit', [QuizProgressController::class, 'store'])->name(Routes::routeQuizSubmit);
     Route::get('quiz/progress/result', [QuizController::class, 'result'])->name(Routes::routeQuizResult);
     Route::get('quizes/generate-questions', [QuizController::class, 'generateQuestion'])->name(Routes::routeQuizGenerate);
 

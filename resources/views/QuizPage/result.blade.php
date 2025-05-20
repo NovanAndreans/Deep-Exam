@@ -107,7 +107,7 @@
             history.go(1);
         };
 
-        const quizData = JSON.parse(localStorage.getItem("quizResult"));
+        const quizData = JSON.parse(localStorage.getItem("quizProgress"));
 
         if (!quizData) {
             alert("Data quiz tidak ditemukan!");
@@ -171,6 +171,44 @@
             }
 
             answerListContainer.appendChild(el);
+        });
+
+        const progressToSend = {
+            totalDuration: quizData.totalDuration || 0,
+            timeSpendSessions: quizData.timeSpendSessions || [],
+            userSkipQuestionSessions: quizData.userSkipQuestionSessions || [],
+            userChangeAnswerSessions: quizData.userChangeAnswerSessions || [],
+            userHintSessions: quizData.userHintSessions || [],
+            correctCount: correct,
+            wrongCount: incorrect,
+            correctPercent: percent
+        };
+
+        fetch('/quiz/progress/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(progressToSend)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Gagal mengirim data ke server.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Progres berhasil dikirim:", data);
+
+            // Hapus data setelah sukses kirim
+            localStorage.removeItem("quizResult");
+            localStorage.removeItem("quizStartTime");
+            localStorage.removeItem("quizProgress");
+        })
+        .catch(error => {
+            console.error("Gagal mengirim progres:", error);
+            alert("Gagal mengirim data ke server. Coba lagi nanti.");
         });
 
         // Hapus semua data di localStorage setelah menampilkan hasil

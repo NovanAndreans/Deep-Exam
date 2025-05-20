@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\QuizProgress;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,7 @@ class AdminController extends Controller
     public function home() : View {
         $this->setMenuSession();
         $this->setUserSession();
-        return view('AdminPages.dashboard');
+        $data = QuizProgress::where('user_id', auth()->id())->get();
+        return view('AdminPages.dashboard', compact('data'));
     }
 }

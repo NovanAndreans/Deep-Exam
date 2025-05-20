@@ -23,6 +23,7 @@ class Routes
     const routeQuiz = 'quiz.index';
     const routeQuizDt = 'quiz.dt';
     const routeQuizProgress = 'quiz.progress';
+    const routeQuizSubmit = 'quiz.submit';
     const routeQuizResult = 'quiz.results';
     const routeQuizGenerate = 'quizes.generate';
 
