@@ -32,6 +32,15 @@
                         </select>
                         <label for="role">Role</label>
                     </div>
+                    <div class="form-floating mb-4">
+                        <select name="class" class="form-select" id="class" aria-label="Floating label select example">
+                            <option value="">Select Kelas</option>
+                            @foreach ($classes as $class)
+                            <option value="{{$class->id}}">{{$class->name}}</option>
+                            @endforeach
+                        </select>
+                        <label for="class">Class</label>
+                    </div>
                     <div class="form-floating mb-3">
                         <input name="name" type="text" class="form-control" id="name" placeholder="Name">
                         <label for="name">Fullname</label>

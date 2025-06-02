@@ -30,7 +30,9 @@ class RpsController extends Controller
     public function subCpmkView($id)
     {
         $id = decrypt($id);
-        $data = $this->rps->with(['subCpmk', 'quizSetting', 'meeting' => function ($query) {
+        $data = $this->rps->with(['subCpmk' => function ($query) {
+            $query->orderBy('limit_bloom', 'asc');
+        }, 'quizSetting', 'meeting' => function ($query) {
             $query->with(['kisi']);
         }])->find($id);
         $features = $this->setFeatureSession(Routes::routeMasterRps);

@@ -19,6 +19,8 @@ use App\Http\Controllers\Guest\GuestController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizProgressController;
 use App\Http\Controllers\QuizSettingController;
+use App\Http\Controllers\QuizType3Controller;
+use App\Http\Controllers\QuizType4Controller;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -43,8 +45,19 @@ Route::middleware('auth:web')->group(function () {
 
     Route::resource('quiz', QuizController::class);
     Route::get('quiz/{id}/progress', [QuizController::class, 'progress'])->name(Routes::routeQuizProgress);
-    Route::post('quiz/progress/submit', [QuizProgressController::class, 'store'])->name(Routes::routeQuizSubmit);
+    Route::post('quiz/progress/submittype2', [QuizProgressController::class, 'storeType2'])->name(Routes::routeQuizSubmitType2);
     Route::get('quiz/progress/result', [QuizController::class, 'result'])->name(Routes::routeQuizResult);
+
+    Route::resource('quiz3', QuizType3Controller::class);
+    Route::get('quiz3/{id}/progress-type3', [QuizType3Controller::class, 'progress'])->name(Routes::routeQuizType3Progress);
+    Route::post('quiz3/progress/submittype3', [QuizProgressController::class, 'storeType3'])->name(Routes::routeQuizSubmitType3);
+    Route::get('quiz3/progress/result', [QuizType3Controller::class, 'result'])->name(Routes::routeQuizResult3);
+    
+    Route::resource('quiz4', QuizType4Controller::class);
+    Route::get('quiz4/{id}/progress-type4', [QuizType4Controller::class, 'progress'])->name(Routes::routeQuizType4Progress);
+    Route::post('quiz4/progress/submittype4', [QuizProgressController::class, 'storeType4'])->name(Routes::routeQuizSubmitType4);
+    Route::get('quiz4/progress/result', [QuizType4Controller::class, 'result'])->name(Routes::routeQuizResult4);
+
     Route::get('quizes/generate-questions', [QuizController::class, 'generateQuestion'])->name(Routes::routeQuizGenerate);
 
     Route::group(['prefix' => 'masters'], function () {

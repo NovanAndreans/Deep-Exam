@@ -23,7 +23,6 @@ class MenuSeeder extends Seeder
             ]
         ],
         [
-            'menuroute' => Routes::routeQuiz,
             'menunm' => 'Quiz',
             'menuicon' => 'fas fa-list-alt',
             'features' => [
@@ -31,6 +30,41 @@ class MenuSeeder extends Seeder
                     'feattitle' => 'View',
                     'featslug' => 'view',
                 ]
+            ],
+            'children' => [
+                [
+                    'menuroute' => Routes::routeQuiz,
+                    'menunm' => 'Quiz Type 2',
+                    'menuicon' => 'fas fa-list-alt',
+                    'features' => [
+                        [
+                            'feattitle' => 'View',
+                            'featslug' => 'view',
+                        ]
+                    ]
+                ],
+                [
+                    'menuroute' => Routes::routeQuizType3,
+                    'menunm' => 'Quiz Type 3',
+                    'menuicon' => 'fas fa-list-alt',
+                    'features' => [
+                        [
+                            'feattitle' => 'View',
+                            'featslug' => 'view',
+                        ]
+                    ]
+                ],
+                [
+                    'menuroute' => Routes::routeQuizType4,
+                    'menunm' => 'Quiz Type 4',
+                    'menuicon' => 'fas fa-list-alt',
+                    'features' => [
+                        [
+                            'feattitle' => 'View',
+                            'featslug' => 'view',
+                        ]
+                    ]
+                ],
             ]
         ],
         [
