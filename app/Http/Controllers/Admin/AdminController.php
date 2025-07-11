@@ -12,7 +12,7 @@ class AdminController extends Controller
     public function home() : View {
         $this->setMenuSession();
         $this->setUserSession();
-        $data = QuizProgress::where('user_id', auth()->id())->get();
+        $data = QuizProgress::where('user_id', auth()->id())->orderBy('id', 'desc')->get();
         return view('AdminPages.dashboard', compact('data'));
     }
 }

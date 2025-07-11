@@ -94,7 +94,7 @@
     </div>
 
     <div class="footer mt-4">
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScE0x97AG5YuRAelZTJ10lR2PteJXbRJQFaYglI5lsogDu3_g/viewform?usp=header"
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfJTpF7VRaVnb2eE7W0JV17U7ILxzlqQ4di2MMJ-Frhjr2keA/viewform?usp=header"
             class="btn btn-primary" target="_blank" rel="noopener noreferrer">
             Isi Kuisioner
         </a>
@@ -189,7 +189,7 @@
             rps_id: quizData.rps_id
         };
 
-        fetch('/quiz/progress/submittype2', {
+        fetch('/quiz4/progress/submittype4', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

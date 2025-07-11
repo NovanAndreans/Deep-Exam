@@ -30,11 +30,13 @@ class RpsController extends Controller
     public function subCpmkView($id)
     {
         $id = decrypt($id);
-        $data = $this->rps->with(['subCpmk', 'quizSetting', 'meeting' => function ($query) {
+        $data = $this->rps->with(['subCpmk' => function ($query) {
+            $query->orderBy('limit_bloom', 'asc');
+        }, 'quizSetting', 'meeting' => function ($query) {
             $query->with(['kisi']);
         }])->find($id);
         $features = $this->setFeatureSession(Routes::routeMasterRps);
-        return view('AdminPages.Masters.Rps.subCpmk', compact('data', 'features'));
+        return view('AdminPages.Masters.RPS.subCpmk', compact('data', 'features'));
     }
 
     /**
@@ -66,7 +68,7 @@ class RpsController extends Controller
         }
 
         $features = $this->setFeatureSession(Routes::routeMasterRps);
-        return view('AdminPages.Masters.Rps.index', compact('features'));
+        return view('AdminPages.Masters.RPS.index', compact('features'));
     }
 
 

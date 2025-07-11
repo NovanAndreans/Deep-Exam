@@ -224,7 +224,7 @@
 
 <div class="quiz-container" style="display: none;">
     <div class="left-section">
-        <h3 class="text-center">Quiz Matematika Dasar</h3>
+        <h3 class="text-center">Quiz</h3>
         <div id="quiz-timer" class="timer">Waktu: {{ $setting->batas_waktu }}:00</div>
         <div id="current-subcpmk-info" class="text-center my-2"></div>
         <hr>
@@ -285,16 +285,18 @@
 
     const firstCpmk = {{ $firstCpmks }};
     const firstLimitBloom = {{ $firstLimitBloom }};
-
+    const predictUrl = "{{ $predictUrl }}";
     const id2 = {{ $id2 }};
-    const quizLimitpersession = {{ $setting['soal_per_sesi'] }};
-    const hintLimitpersession = 1;
+
+    let quizLimitpersession = {{ $setting['soal_per_sesi'] }};
+    let hintLimitpersession = 2;
     let currentQuestion = 1;
     let selectedAnswers = {};
     let correctAnswers = [];
     let wrongAnswers = [];
     let timer;
     let timeLeft = {{ $setting['batas_waktu'] }} * 60;
+    let waktuBerjalan = timeLeft;
     
     let correctAnswersSesion = 0;
     let sessionStartTime;  // Variable to track session start time
@@ -482,67 +484,124 @@ document.addEventListener('visibilitychange', function() {
         const totalDuration = Math.floor((endTime - startTime) / 1000);
         progress.totalDuration = totalDuration;
 
-        // Evaluasi SubCPMK
-        evaluateSession(correct, quizLimitpersession);
-
         // Record time spent on the session
         const sessionTimeSpent = Math.floor((endTime - sessionStartTime) / 1000); // Time spent on current session
         progress.timeSpendSessions.push({
             session: progress.sessionNumber - 1,
             time: sessionTimeSpent
         });
+
+        // Evaluasi SubCPMK
+        evaluateSession(correct, quizLimitpersession, sessionTimeSpent);
+
     }
 
 
-    function evaluateSession(score, totalQuestions) {
+    async function evaluateSession(score, totalQuestions, sessionTimeSpent) {
         const subCpmks = allSubCpmks;
         const currentCpmk = subCpmks.find(s => s.id === progress.currentSubCpmkId);
         progress.currentBloomLevel = currentCpmk['limit_bloom'];
 
         const currentIndex = subCpmks.findIndex(s => s.id === progress.currentSubCpmkId);
-        const passed = score == totalQuestions;
+        
+        let passed;
         const accuracy = score / totalQuestions;
 
-        // Simpan hasil evaluasi sesi
-        progress.history.push({
-            subCpmkId: progress.currentSubCpmkId,
-            session: progress.sessionNumber,
-            score: score,
-            total: totalQuestions,
-            passed: passed
-        });
 
-	// LOGIC MENAIKKAN DAN MENURUNKAN LEVEL
-        // Logika untuk mengatur Bloom Level
-        if (accuracy === 0 && progress.currentBloomLevel != 1) {
+        if (userChangeAnswer === 0) {
+            userChangeAnswer = 0;
+        } else if (userChangeAnswer === quizLimitpersession) {
+            userChangeAnswer = 0;
+        } else {
+            userChangeAnswer -= quizLimitpersession;
+        }
+
+        let notasiB = score;
+        let notasiM = (totalQuestions - score);
+        let notasiC = userChangeAnswer / (totalQuestions * 2);
+        let notasiT = sessionTimeSpent / 240;
+        let notasiO = userSkipQuestion / 4;
+        let notasiI = userHintClicked / (totalQuestions * 3);
+        let notasiE = (notasiB * 0.5) + (notasiM * 0.3) + (notasiC * 0.2);
+        let notasiTr = (notasiB + notasiM) / 2;
+        let notasiQ = (notasiB + notasiM + notasiC) / 3;
+        let notasiSt = (notasiO + notasiI + notasiQ + notasiTr) / 4;
+
+        // PENTING: tunggu hasil async clasification
+        let classific = await clasification(notasiB, notasiM, notasiC, notasiT, notasiO, notasiI, notasiE, notasiTr, notasiQ, notasiSt);
+        let levelAdjust = classific.ep.class_index + classific.me.class_index;
+        
+        // let questionAdjust = classific.ep.class_index - classific.te.class_index;
+        if (classific.ep.class_index == 2 && quizLimitpersession > 1) {
+            quizLimitpersession -= 1;
+        }else if (classific.ep.class_index == 1) {
+            quizLimitpersession = quizLimitpersession;
+        }else if (classific.ep.class_index == 0 && quizLimitpersession < 4) {
+            quizLimitpersession += 1;
+        }
+
+        if (classific.te.class_index == 0 && quizLimitpersession > 1) {
+            quizLimitpersession -= 1;
+        }else if (classific.te.class_index == 1) {
+            quizLimitpersession = quizLimitpersession;
+        }else if (classific.te.class_index == 2 && quizLimitpersession < 4) {
+            quizLimitpersession += 1;
+        }
+
+        let timeAdjust = classific.cf.class_index + classific.ps.class_index;
+        console.log("timeAdjust = " + timeAdjust);
+        if (timeAdjust < 2 && timeLeft > 120) {
+            console.log("timeAdjust Dikurangi");
+            timeLeft -= 30;
+        } else if (timeAdjust == 2) {
+            timeLeft = timeLeft;
+        } else if (timeAdjust >= 3 && timeLeft < 240) {
+            timeLeft += 30;
+        }
+
+        let hintAdjust = classific.cf.class_index + classific.ac.class_index;
+        console.log("hintAdjust = " + hintAdjust);
+        if (hintAdjust < 2 && hintLimitpersession > 1) {
+            hintLimitpersession -= 1;
+        } else if (hintAdjust == 2) {
+            hintLimitpersession = hintLimitpersession;
+        } else if (hintAdjust >= 3 && hintLimitpersession < 3) {
+            hintLimitpersession += 1;
+        }
+
+        if (classific.me.class_index == 2 && hintLimitpersession > 1) {
+            hintLimitpersession -= 1;
+        }else if (classific.me.class_index == 1) {
+            hintLimitpersession = hintLimitpersession;
+        }else if (classific.me.class_index == 0 && hintLimitpersession < 3) {
+            hintLimitpersession += 1;
+        }
+
+        // LOGIC MENAIKKAN DAN MENURUNKAN LEVEL
+        if (levelAdjust < 2 && progress.currentBloomLevel !== 1) {
+            passed = false;
             progress.currentBloomLevel = Math.max(progress.currentBloomLevel - 1, 1);
-        } else if (accuracy >= 0.5 && accuracy < 1) {
-                progress.currentBloomLevel = progress.currentBloomLevel;
-        } else if (accuracy == 1) {
+        } else if (levelAdjust === 2) {
+            passed = false;
+        } else if (levelAdjust >= 3) {
             if (progress.currentBloomLevel < currentCpmk.limit_bloom) {
                 progress.currentBloomLevel++;
             } else if (currentIndex + 1 < subCpmks.length) {
-                progress.currentSubCpmkId = subCpmks[currentIndex + 1].id;
+                passed = true;
                 progress.currentBloomLevel = 1;
             }
         }
 
-        if (userChangeAnswer == quizLimitpersession) {
-            userChangeAnswer = 0;
-        }else{
-	    userChangeAnswer -= quizLimitpersession;
-	}
-        
         progress.userChangeAnswerSessions.push({
             session: progress.sessionNumber,
             changeAnswer: userChangeAnswer
         });
-        
+
         progress.userHintSessions.push({
             session: progress.sessionNumber,
             hintShowed: userHintClicked
         });
-        
+
         progress.userSkipQuestionSessions.push({
             session: progress.sessionNumber,
             skipQuestion: userSkipQuestion
@@ -562,26 +621,69 @@ document.addEventListener('visibilitychange', function() {
 
         // Cek apakah semua SubCPMK sudah selesai
         const allSubCpmksCompleted = allSubCpmks.every(sub => {
-            // Pastikan SubCPMK hanya dianggap selesai jika salah satu sesi untuk sub tersebut sudah selesai dengan 'passed'
             const completed = progress.history
-                .filter(item => item.subCpmkId === sub.id)  // Filter untuk mendapatkan semua sesi untuk SubCPMK ini
-                .some(item => item.passed);  // Cek jika ada sesi yang memiliki status 'passed'
-            
+                .filter(item => item.subCpmkId === sub.id)
+                .some(item => item.passed);
+
             console.log(`SubCPMK ID ${sub.id}: ${completed ? 'Selesai' : 'Belum Selesai'}`);
             return completed;
         });
 
-        // Log status akhir
         console.log(`Semua SubCPMK selesai: ${allSubCpmksCompleted}`);
+        
+        // Simpan hasil evaluasi sesi
+        progress.history.push({
+            subCpmkId: progress.currentSubCpmkId,
+            session: progress.sessionNumber,
+            score: score,
+            total: totalQuestions,
+            passed: passed
+        });
 
-        // Jika semua SubCPMK selesai, otomatis selesaikan ujian
+        if (passed) {
+            progress.currentSubCpmkId = subCpmks[currentIndex + 1].id;
+        }
+
         if (allSubCpmksCompleted) {
             console.log('Semua SubCPMK selesai, mengakhiri ujian...');
             finishQuizAutomatically();
         } else {
             console.log('Masih ada SubCPMK yang belum selesai, melanjutkan...');
-            if(progress.questionsLog.length < quizLimit) generateNewQuestions(progress.currentSubCpmkId, progress.currentBloomLevel);
-	    else finishQuizAutomatically();
+            if (progress.questionsLog.length < quizLimit) {
+                generateNewQuestions(progress.currentSubCpmkId, progress.currentBloomLevel);
+            } else {
+                finishQuizAutomatically();
+            }
+        }
+    }
+
+    // Fungsi clasification tetap async seperti ini:
+    async function clasification(notasiB, notasiM, notasiC, notasiT, notasiO, notasiI, notasiE, notasiTr, notasiQ, notasiSt) {
+        try {
+            const response = await fetch(predictUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    "features_ep_no_cluster2": [notasiB, notasiQ, notasiM, notasiC, notasiE],
+                    "features_cf_no_cluster2": [notasiB, notasiQ, notasiM, notasiC],
+                    "features_te_no_cluster2": [notasiB, notasiQ, notasiTr, notasiM, notasiC],
+                    "features_me_no_cluster2": [notasiB, notasiT, notasiE, notasiSt],
+                    "features_ps_no_cluster2": [notasiT, notasiTr, notasiE, notasiSt],
+                    "features_ac_no_cluster2": [notasiI, notasiQ, notasiSt]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Response:', data);
+            return data;
+
+        } catch (error) {
+            console.error('Error:', error);
+            return 0;
         }
     }
 
@@ -726,26 +828,26 @@ document.addEventListener('visibilitychange', function() {
         document.getElementById('question-container').classList.remove("hidden");
     }
 
+
     function startTimer() {
         clearInterval(timer);
         sessionStartTime = Date.now(); // Mark the start time of the session
-        timeLeft = {{ $setting['batas_waktu'] }} * 60;
-
+        waktuBerjalan = timeLeft;
         timer = setInterval(() => {
-            if (timeLeft == 0) {
-        	clearInterval(timer);
-		Swal.fire({
-            		icon: 'danger',
-            		title: 'Perhatian!',
-            		text: 'Waktu habis!',
-            		timer: 1500,
-            		showConfirmButton: false
-        	});
-                generateNewQuestions(progress.currentSubCpmkId, progress.currentBloomLevel);
+            if (waktuBerjalan == 0) {
+                clearInterval(timer);
+                Swal.fire({
+                            icon: 'danger',
+                            title: 'Perhatian!',
+                            text: 'Waktu habis!',
+                            timer: 1500,
+                            showConfirmButton: false
+                    });
+                submitQuiz();
             }
-            timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
+            waktuBerjalan--;
+            const minutes = Math.floor(waktuBerjalan / 60);
+            const seconds = waktuBerjalan % 60;
             document.getElementById("quiz-timer").textContent =
                 `Waktu: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }, 1000);
@@ -793,7 +895,7 @@ document.addEventListener('visibilitychange', function() {
 
         localStorage.setItem("quizResult", JSON.stringify(quizResult));
         alert(`Quiz selesai! Waktu total: ${Math.floor(progress.totalDuration / 60)} menit ${progress.totalDuration % 60} detik`);
-        window.location.href = "{{ route(\App\Constants\Routes::routeQuizResult) }}";
+        window.location.href = "{{ route(\App\Constants\Routes::routeQuizResult4) }}";
     }
 
 

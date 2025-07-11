@@ -34,7 +34,11 @@ class AuthController extends Controller
                 $this->type->getIdByCode(DBTypes::RoleGuruPrem),
                 $this->type->getIdByCode(DBTypes::RoleSiswaPrem),
             ])->get();
-        return view('AuthPages.signup', compact('roles'));
+        $classes = $this->type
+            ->where('master_id', $this->type->getIdByCode(DBTypes::userClass))
+            ->get();
+
+        return view('AuthPages.signup', compact('roles', 'classes'));
     }
 
     public function signupAction(Request $request)

@@ -42,6 +42,74 @@ class TypeSeeder extends Seeder
             ]
         ],
         [
+            'code' => DBTypes::userClass,
+            'name' => 'User Class',
+            'children' => [
+                [
+                    'name' => '1',
+                    'code' => DBTypes::UserClass1
+                ],
+                [
+                    'name' => '2',
+                    'code' => DBTypes::UserClass2
+                ],
+                [
+                    'name' => '3',
+                    'code' => DBTypes::UserClass3
+                ],
+                [
+                    'name' => '4',
+                    'code' => DBTypes::UserClass4
+                ],
+                [
+                    'name' => '5',
+                    'code' => DBTypes::UserClass5
+                ],
+                [
+                    'name' => '6',
+                    'code' => DBTypes::UserClass6
+                ],
+                [
+                    'name' => '7',
+                    'code' => DBTypes::UserClass7
+                ],
+                [
+                    'name' => '8',
+                    'desc' => 'important',
+                    'code' => DBTypes::UserClass8
+                ],
+                [
+                    'name' => '9',
+                    'code' => DBTypes::UserClass9
+                ],
+                [
+                    'name' => '10',
+                    'code' => DBTypes::UserClass10
+                ],
+            ]
+        ],
+        [
+            'code' => DBTypes::QuizType,
+            'name' => 'Quiz Type',
+            'children' => [
+                [
+                    'name' => 'Quiz Type 2',
+                    'desc' => 'important',
+                    'code' => DBTypes::QuizType2
+                ],
+                [
+                    'name' => 'Quiz Type 3',
+                    'desc' => 'important',
+                    'code' => DBTypes::QuizType3
+                ],
+                [
+                    'name' => 'Quiz Type 4',
+                    'desc' => 'important',
+                    'code' => DBTypes::QuizType4
+                ],
+            ]
+        ],
+        [
             'code' => DBTypes::UserGender,
             'name' => 'User Gender',
             'children' => [

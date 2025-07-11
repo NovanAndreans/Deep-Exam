@@ -10,7 +10,7 @@ use App\Models\SubCpmk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class QuizController extends Controller
+class QuizType3Controller extends Controller
 {
     protected $rps, $subCpmk, $quizSetting;
     public function __construct(Rps $rps, SubCpmk $subCpmk, QuizSetting $quizSetting)
@@ -52,13 +52,13 @@ class QuizController extends Controller
     {
         $subCpmkId = $request->query('subcpmk');
         $bloomLevel = $request->query('limit_bloom');
-        $jml_soal = $request->query('jml_soal');
-        $jml_hint = $request->query('jml_hint');
         // Dummy data, seolah-olah dari Gemini
 
+        $rpsId = $this->subCpmk->find($subCpmkId)->cpmk_id;
+        $subCpmkQuestion = $this->quizSetting->where('rps_id', $rpsId)->first()->soal_per_sesi;
         $subCpmkId = $this->subCpmk->find($subCpmkId)->subcpmk;
 
-        $jsonString  = $this->generateAI(AiText::GenerateQuestion($subCpmkId, $bloomLevel, $jml_soal, $jml_hint));
+        $jsonString  = $this->generateAI(AiText::GenerateQuestion($subCpmkId, $bloomLevel, $subCpmkQuestion));
 
         $jsonString = preg_replace('/```(?:json)?|```/i', '', $jsonString);
         $jsonString = trim($jsonString);
@@ -72,7 +72,7 @@ class QuizController extends Controller
 
     public function result()
     {
-        return view('QuizPage.result');
+        return view('QuizPageType3.result');
     }
 
     public function progress($id)
@@ -88,7 +88,8 @@ class QuizController extends Controller
 
         $id2 = $id;
         $id = encrypt($id);
-        return view('QuizPage.quiz', compact('firstCpmks', 'firstLimitBloom', 'subCpmks', 'id', 'id2', 'setting'));
+        $predictUrl = config('api.predict_url');
+        return view('QuizPageType3.quiz', compact('predictUrl', 'firstCpmks', 'firstLimitBloom', 'subCpmks', 'id', 'id2', 'setting'));
     }
 
     /**
@@ -113,7 +114,7 @@ class QuizController extends Controller
 
 
 
-        return view('QuizPage.index', compact('publicQuizzes', 'teacherQuizzes'));
+        return view('QuizPageType3.index', compact('publicQuizzes', 'teacherQuizzes'));
     }
 
     /**
@@ -142,7 +143,7 @@ class QuizController extends Controller
             $query->with(['kisi']);
         }])->find($id);
 
-        return view('QuizPage.detail', compact('data'));
+        return view('QuizPageType3.detail', compact('data'));
     }
 
     /**

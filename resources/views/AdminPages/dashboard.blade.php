@@ -15,7 +15,7 @@
                 <i class="fa fa-clock fa-3x text-primary"></i>
                 <div class="ms-3">
                     <p class="mb-2">Total Duration</p>
-                    <h6 class="mb-0">{{ $progress['total_duration'] }} menit</h6>
+                    <h6 class="mb-0">{{ $progress['total_duration'] }} detik</h6>
                 </div>
             </div>
         </div>

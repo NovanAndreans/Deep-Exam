@@ -16,6 +16,8 @@ class QuizProgress extends Model
         'skip_question_sessions',
         'change_answer_sessions',
         'hint_sessions',
+        'type_quiz_id',
+        'rps_id',
     ];
 
     protected $casts = [
